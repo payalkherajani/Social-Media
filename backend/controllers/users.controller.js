@@ -83,6 +83,29 @@ const getLoggedInUserInfo = async (req, res) => {
 
 const toggleFollowing = async (req, res) => {
     try {
+        const userId = req.user  // this person is trying to follow or unfollow someone :)
+        const { followingpersonId } = req.body  // this person is either followed or unfollowed
+        const userWhoisTryingToFollowOrUnfollow = await User.findOne({ _id: userId })
+        const userWhoisGettingFollowedOrUnfollowed = await User.findOne({ _id: followingpersonId })
+        const isUserAlreadyFollowed = userWhoisTryingToFollowOrUnfollow.following.some(({ user }) => user === followingpersonId)
+        if (isUserAlreadyFollowed) {
+            //unfollow person
+            const removedUserFromFollowing = userWhoisTryingToFollowOrUnfollow.following.filter(({ user }) => user !== followingpersonId)
+            const updated = _.extend(userWhoisTryingToFollowOrUnfollow.following, removedUserFromFollowing)
+            await updated.save();
+            const removedUserFromFollowersofFollowingPerson = userWhoisGettingFollowedOrUnfollowed.followers.filter(({ user }) => user !== userId)
+            const removedFollowers = _.extend(userWhoisGettingFollowedOrUnfollowed.followers, removedUserFromFollowersofFollowingPerson)
+            await removedFollowers.save()
+        }
+        //follow person
+        const addUserIntoFollowing = [...userWhoisTryingToFollowOrUnfollow.following, { user: userWhoisGettingFollowedOrUnfollowed._id }]
+        const updatedFollowing = _.extend(userWhoisTryingToFollowOrUnfollow.following, addUserIntoFollowing)
+        await updatedFollowing.save();
+        const addUserToFollowers = [...userWhoisGettingFollowedOrUnfollowed.followers, { user: userWhoisTryingToFollowOrUnfollow._id }]
+        const updatedFollowers = _.extend(userWhoisGettingFollowedOrUnfollowed.followers, addUserToFollowers)
+        await updatedFollowers.save();
+
+        res.status(200).json({ success: true, messaged: 'updated' })
 
     } catch (err) {
         return res.status(500).json({ success: false, message: 'Server Error' });
@@ -90,4 +113,4 @@ const toggleFollowing = async (req, res) => {
 }
 
 
-export { registerUser, loginUser, getLoggedInUserInfo, updateUserAvatarandBio }
+export { registerUser, loginUser, getLoggedInUserInfo, updateUserAvatarandBio, toggleFollowing }

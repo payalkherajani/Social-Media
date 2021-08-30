@@ -34,7 +34,8 @@ const getPostByID = async (req, res) => {
 
 const updatePostDetails = async (req, res) => {
     try {
-
+        const { postId } = req.params
+        const post = await Post.findOne({ _id: postId })
     } catch (err) {
         console.log(err)
         res.status(500).json({ success: false, message: 'Server Error' })
@@ -44,10 +45,12 @@ const updatePostDetails = async (req, res) => {
 
 const deletePost = async (req, res) => {
     try {
-
+        const { postId } = req.params
+        const post = await Post.findOne({ _id: postId })
+        await post.remove()
     } catch (err) {
         console.log(err)
         res.status(500).json({ success: false, message: 'Server Error' })
     }
 }
-export { addANewPost, getPostByID }
+export { addANewPost, getPostByID, deletePost }

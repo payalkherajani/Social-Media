@@ -1,6 +1,7 @@
 const User = require('../models/users.model')
 const bcrypt = require('bcrypt')
 const _ = require('lodash')
+const generateToken = require('../utlis/token')
 
 const registerUser = async (req, res) => {
     try {
@@ -24,6 +25,8 @@ const registerUser = async (req, res) => {
             following: []
         })
 
+        await user.save()
+
         res.status(200).json({ success: true, user, message: 'Registration Successfull' })
 
     } catch (err) {
@@ -38,9 +41,9 @@ const loginUser = async (req, res) => {
         const { email, password } = req.body
         const userExists = await User.findOne({ email })
         if (userExists) {
-            const isPasswordMatch = bcrypt.compare(password, user.password)
+            const isPasswordMatch = bcrypt.compare(password, userExists.password)
             if (isPasswordMatch) {
-                const token = generateToken(user._id)  // need to make this function
+                const token = generateToken(userExists._id)
                 return res.status(200).json({ success: false, message: 'Login Successfull', token })
             } else {
                 return res.status(400).json({ success: false, message: 'Invalid Credentials' })
@@ -113,4 +116,4 @@ const toggleFollowing = async (req, res) => {
 }
 
 
-export { registerUser, loginUser, getLoggedInUserInfo, updateUserAvatarandBio, toggleFollowing }
+module.exports = { registerUser, loginUser, getLoggedInUserInfo, updateUserAvatarandBio, toggleFollowing }

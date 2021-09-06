@@ -134,4 +134,4 @@ const removeCommentOnPost = async (req, res) => {
 
     }
 }
-export { addANewPost, getPostByID, deletePost, toggleLikesOnPostByID, addCommentOnPostByID, removeCommentOnPost }
+export { addANewPost, getPostByID, deletePost, toggleLikesOnPostByID, addCommentOnPostByID, removeCommentOnPost, updatePostDetails }

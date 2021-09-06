@@ -62,6 +62,25 @@ const deletePost = async (req, res) => {
 
 const toggleLikesOnPostByID = async (req, res) => {
     try {
+        const { postId } = req.params
+        const userId = req.user
+        const post = Post.findOne({ _id: postId })
+        if (!post) {
+            return res.status(400).json({ success: false, message: 'No Post Found' })
+        }
+        const hasUserAlreadyLikedPost = post.likes.some(({ user }) => user == userId)
+        if (hasUserAlreadyLikedPost) {
+            const filteredLikes = post.likes.filter(({ user }) => user === userId)
+            const updatedLikes = { ...post._doc, likes: filteredLikes }
+            const updatedPost = _.extend(post, updatedLikes)
+            return res.status(200).json({ success: true, post: updatedPost })
+        }
+        else {
+            const addedLikes = [...post.likes, { user: userId }]
+            const updatedLikes = { ...post._doc, likes: addedLikes }
+            const updatedPost = _.extend(post, updatedLikes)
+            return res.status(200).json({ success: true, post: updatedPost })
+        }
 
     } catch (err) {
         console.log(err)
@@ -72,6 +91,17 @@ const toggleLikesOnPostByID = async (req, res) => {
 
 const addCommentOnPostByID = async (req, res) => {
     try {
+        const { postId } = req.params
+        const userId = req.user
+        const post = Post.findOne({ _id: postId })
+        if (!post) {
+            return res.status(400).json({ success: false, message: 'No Post Found' })
+        }
+        const { text } = req.body
+        const addComment = [...post.comment, { user: userId, text }]
+        const updatedComment = { ...post._doc, likes: addComment }
+        const updatedPost = _.extend(post, updatedComment)
+        return res.status(200).json({ success: true, post: updatedPost })
 
     } catch (err) {
         console.log(err)
@@ -81,11 +111,27 @@ const addCommentOnPostByID = async (req, res) => {
 
 const removeCommentOnPost = async (req, res) => {
     try {
+        const { commentId } = req.params
+        const userId = req.user
+        const post = Post.findOne({ _id: postId })
+        if (!post) {
+            return res.status(400).json({ success: false, message: 'No Post Found' })
+        }
 
+        const isUserAuthorizedToRemoveComment = post.comments.some(({ user }) => user == userId)
+        if (isUserAuthorizedToRemoveComment) {
+            const filterComment = post.comments.filter(({ _id }) => _id !== commentId)
+            const updatedPost = { ...post._doc, comments: filterComment }
+            const updated = _.extend(post, updatedPost)
+            return res.status(200).json({ success: true, post: updated })
+        }
+        else {
+            return res.status(400).json({ success: false, message: 'You are Unauthrozied to remove comment' })
+        }
     } catch (err) {
         console.log(err)
         res.status(500).json({ success: false, message: 'Server Error' })
 
     }
 }
-export { addANewPost, getPostByID, deletePost }
+export { addANewPost, getPostByID, deletePost, toggleLikesOnPostByID, addCommentOnPostByID, removeCommentOnPost }

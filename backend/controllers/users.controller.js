@@ -143,12 +143,14 @@ const toggleFollowing = async (req, res) => {
 }
 
 
-const getUserByID = async (req, res) => {
-
-}
-
 const getAllUsers = async (req, res) => {
-
+    try {
+        const allUsers = await User.find({})
+        return res.status(200).json({ success: true, users: allUsers })
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({ success: false, message: 'Server Error' });
+    }
 }
 
-module.exports = { registerUser, loginUser, getLoggedInUserInfo, updateUserAvatarandBio, toggleFollowing }
+module.exports = { registerUser, loginUser, getLoggedInUserInfo, updateUserAvatarandBio, toggleFollowing, getAllUsers }

@@ -99,30 +99,56 @@ const toggleFollowing = async (req, res) => {
         const { followingpersonId } = req.body  // this person is either followed or unfollowed
         const userWhoisTryingToFollowOrUnfollow = await User.findOne({ _id: userId })
         const userWhoisGettingFollowedOrUnfollowed = await User.findOne({ _id: followingpersonId })
-        const isUserAlreadyFollowed = userWhoisTryingToFollowOrUnfollow.following.some(({ user }) => user === followingpersonId)
+        const isUserAlreadyFollowed = userWhoisTryingToFollowOrUnfollow.following.some(({ user }) => user == followingpersonId)
         if (isUserAlreadyFollowed) {
             //unfollow person
-            const removedUserFromFollowing = userWhoisTryingToFollowOrUnfollow.following.filter(({ user }) => user !== followingpersonId)
-            const updated = _.extend(userWhoisTryingToFollowOrUnfollow.following, removedUserFromFollowing)
+            const removedUserFromFollowing = userWhoisTryingToFollowOrUnfollow.following.filter(({ user }) => user != followingpersonId)
+            const updatedDocFollowing = {
+                ...userWhoisTryingToFollowOrUnfollow._doc,
+                following: removedUserFromFollowing
+            }
+            const updated = _.extend(userWhoisTryingToFollowOrUnfollow, updatedDocFollowing)
             await updated.save();
-            const removedUserFromFollowersofFollowingPerson = userWhoisGettingFollowedOrUnfollowed.followers.filter(({ user }) => user !== userId)
-            const removedFollowers = _.extend(userWhoisGettingFollowedOrUnfollowed.followers, removedUserFromFollowersofFollowingPerson)
+            const removedUserFromFollowersofFollowingPerson = userWhoisGettingFollowedOrUnfollowed.followers.filter(({ user }) => user != userId)
+            const updatedDocFollowers = {
+                ...userWhoisGettingFollowedOrUnfollowed,
+                followers: removedUserFromFollowersofFollowingPerson
+            }
+            const removedFollowers = _.extend(userWhoisGettingFollowedOrUnfollowed, updatedDocFollowers)
             await removedFollowers.save()
+            return res.status(200).json({ success: true, messaged: 'updated' })
         }
         //follow person
         const addUserIntoFollowing = [...userWhoisTryingToFollowOrUnfollow.following, { user: userWhoisGettingFollowedOrUnfollowed._id }]
-        const updatedFollowing = _.extend(userWhoisTryingToFollowOrUnfollow.following, addUserIntoFollowing)
+        const updatedDocFollowing = {
+            ...userWhoisTryingToFollowOrUnfollow._doc,
+            following: addUserIntoFollowing
+        }
+        const updatedFollowing = _.extend(userWhoisTryingToFollowOrUnfollow, updatedDocFollowing)
         await updatedFollowing.save();
         const addUserToFollowers = [...userWhoisGettingFollowedOrUnfollowed.followers, { user: userWhoisTryingToFollowOrUnfollow._id }]
-        const updatedFollowers = _.extend(userWhoisGettingFollowedOrUnfollowed.followers, addUserToFollowers)
+        const updatedDocFollowers = {
+            ...userWhoisGettingFollowedOrUnfollowed,
+            followers: addUserToFollowers
+        }
+        const updatedFollowers = _.extend(userWhoisGettingFollowedOrUnfollowed, updatedDocFollowers)
         await updatedFollowers.save();
 
         res.status(200).json({ success: true, messaged: 'updated' })
 
     } catch (err) {
+        console.log(err)
         return res.status(500).json({ success: false, message: 'Server Error' });
     }
 }
 
+
+const getUserByID = async (req, res) => {
+
+}
+
+const getAllUsers = async (req, res) => {
+
+}
 
 module.exports = { registerUser, loginUser, getLoggedInUserInfo, updateUserAvatarandBio, toggleFollowing }

@@ -61,7 +61,16 @@ const updateUserAvatarandBio = async (req, res) => {
         const { avatar, bio } = req.body
         const userId = req.user
         const user = await User.findOne({ _id: userId })
-        const updatedDetails = { ...user._doc, avatar, bio }
+        let updatedDetails
+        if (avatar && bio) {
+            updatedDetails = { ...user._doc, avatar, bio }
+        }
+        else if (avatar && bio === undefined) {
+            updatedDetails = { ...user._doc, avatar }
+        }
+        else {
+            updatedDetails = { ...user._doc, bio }
+        }
         const updatedUserInformation = _.extend(user, updatedDetails)
         await updatedUserInformation.save()
         res.json({ success: true, message: 'Updated Profile of user', updatedUserInformation })

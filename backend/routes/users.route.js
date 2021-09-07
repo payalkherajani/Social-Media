@@ -5,7 +5,7 @@ const auth = require('../middlewares/auth')
 
 router.post('/register', registerUser)
 router.post('/login', loginUser)
-router.put('/:id', updateUserAvatarandBio)
+router.put('/:id', auth, updateUserAvatarandBio)
 router.get('/', auth, getLoggedInUserInfo)
-router.post('/following', toggleFollowing)
+router.post('/following', auth, toggleFollowing)
 module.exports = router

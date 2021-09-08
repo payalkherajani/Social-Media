@@ -2,9 +2,11 @@ const Post = require('../models/posts.model')
 
 const addANewPost = async (req, res) => {
     try {
-
         const userId = req.user
         const { description, image_of_post } = req.body
+        if (!description) {
+            return res.status(400).json({ success: false, message: 'Missing Required Fields' })
+        }
         const post = new Post({
             user: userId,
             description,
@@ -12,8 +14,8 @@ const addANewPost = async (req, res) => {
             likes: [],
             comments: []
         })
+        await post.save()
         res.status(200).json({ success: true, post })
-
     } catch (err) {
         console.log(err)
         res.status(500).json({ success: false, message: 'Server Error' })
@@ -134,4 +136,4 @@ const removeCommentOnPost = async (req, res) => {
 
     }
 }
-export { addANewPost, getPostByID, deletePost, toggleLikesOnPostByID, addCommentOnPostByID, removeCommentOnPost, updatePostDetails }
+module.exports = { addANewPost, getPostByID, deletePost, toggleLikesOnPostByID, addCommentOnPostByID, removeCommentOnPost, updatePostDetails }

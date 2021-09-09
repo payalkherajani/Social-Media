@@ -1,4 +1,5 @@
 const Post = require('../models/posts.model')
+const _ = require('lodash')
 
 const addANewPost = async (req, res) => {
     try {
@@ -66,21 +67,30 @@ const toggleLikesOnPostByID = async (req, res) => {
     try {
         const { postId } = req.params
         const userId = req.user
-        const post = Post.findOne({ _id: postId })
+        const post = await Post.findOne({ _id: postId })
         if (!post) {
             return res.status(400).json({ success: false, message: 'No Post Found' })
         }
-        const hasUserAlreadyLikedPost = post.likes.some(({ user }) => user == userId)
+
+        const hasUserAlreadyLikedPost = post.likes.some(({ user }) => {
+            console.log(user, userId)
+            return user == userId
+        })
+
         if (hasUserAlreadyLikedPost) {
-            const filteredLikes = post.likes.filter(({ user }) => user === userId)
+            //remove like
+            const filteredLikes = post.likes.filter(({ user }) => user != userId)
             const updatedLikes = { ...post._doc, likes: filteredLikes }
             const updatedPost = _.extend(post, updatedLikes)
+            await updatedPost.save()
             return res.status(200).json({ success: true, post: updatedPost })
         }
         else {
+            //add like
             const addedLikes = [...post.likes, { user: userId }]
             const updatedLikes = { ...post._doc, likes: addedLikes }
             const updatedPost = _.extend(post, updatedLikes)
+            await updatedPost.save()
             return res.status(200).json({ success: true, post: updatedPost })
         }
 
@@ -95,14 +105,17 @@ const addCommentOnPostByID = async (req, res) => {
     try {
         const { postId } = req.params
         const userId = req.user
-        const post = Post.findOne({ _id: postId })
+        const post = await Post.findOne({ _id: postId })
         if (!post) {
             return res.status(400).json({ success: false, message: 'No Post Found' })
         }
         const { text } = req.body
-        const addComment = [...post.comment, { user: userId, text }]
-        const updatedComment = { ...post._doc, likes: addComment }
+        console.log(post)
+        const addComment = [...post._doc.comments, { user: userId, text }]
+        console.log(addComment)
+        const updatedComment = { ...post._doc, comments: addComment }
         const updatedPost = _.extend(post, updatedComment)
+        await updatedPost.save()
         return res.status(200).json({ success: true, post: updatedPost })
 
     } catch (err) {
@@ -113,18 +126,19 @@ const addCommentOnPostByID = async (req, res) => {
 
 const removeCommentOnPost = async (req, res) => {
     try {
-        const { commentId } = req.params
+        const { commentId, postId } = req.params
         const userId = req.user
-        const post = Post.findOne({ _id: postId })
+        const post = await Post.findOne({ _id: postId })
         if (!post) {
             return res.status(400).json({ success: false, message: 'No Post Found' })
         }
 
-        const isUserAuthorizedToRemoveComment = post.comments.some(({ user }) => user == userId)
+        const isUserAuthorizedToRemoveComment = post.comments.some(({ user }) => user == userId || user == post.user)
         if (isUserAuthorizedToRemoveComment) {
-            const filterComment = post.comments.filter(({ _id }) => _id !== commentId)
+            const filterComment = post.comments.filter(({ _id }) => _id != commentId)
             const updatedPost = { ...post._doc, comments: filterComment }
             const updated = _.extend(post, updatedPost)
+            await updated.save()
             return res.status(200).json({ success: true, post: updated })
         }
         else {

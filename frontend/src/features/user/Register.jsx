@@ -25,6 +25,7 @@ const Register = () => {
                 <input type="text" placeholder="Email" name="email" value={email} onChange="" className="px-4 py-3 mb-8 text-pink-500  border-0 border-2 border-pink-600 focus:border-pink-200 hover:border-pink-300 focus:outline-none mb-4" />
 
                 <input type="password" placeholder="Password" name="password" value={password} onChange="" className="px-4 py-3 mb-8 text-pink-500  border-0 border-2 border-pink-600 focus:border-pink-200 hover:border-pink-300 focus:outline-none mb-4" />
+
                 <input type="password" placeholder="Confirm Password" name="confirmpassword" value={confirmpassword} onChange="" className="px-4 py-3 mb-8 text-pink-500  border-0 border-2 border-pink-600 focus:border-pink-200 hover:border-pink-300 focus:outline-none mb-4" />
 
                 <button className="text-white py-2 px-4 font-semibold rounded-lg bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:ring-opacity-50 mb-4">Register</button>

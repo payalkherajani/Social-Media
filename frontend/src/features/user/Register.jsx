@@ -1,17 +1,15 @@
 import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
 import { registerANewUser } from './UserSlice'
-import { Navigate } from 'react-router-dom'
-
-
-
-console.log(process.env.REACT_APP_URL)
+import { useNavigate } from 'react-router-dom'
 
 const Register = () => {
 
     const dispatch = useDispatch()
+    const navigate = useNavigate()
+    const user = useSelector((state) => state.user)
 
     const [formData, setFormData] = useState({
         name: '',
@@ -31,6 +29,13 @@ const Register = () => {
         e.preventDefault()
         if (confirmpassword === password) {
             dispatch(registerANewUser({ name, email, password }))
+            if (user.status === 'Success') {
+                navigate('/register')
+            }
+            else if (user.status === 'Failed') {
+                console.log(user, "rejected")
+                toast.error(user.error)
+            }
         } else {
             toast.error(`Passwords Don't Match`)
         }

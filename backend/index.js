@@ -6,10 +6,11 @@ const postRoutes = require('./routes/posts.route')
 const auth = require('./middlewares/auth')
 
 const app = express()
+connectDB()
 
 app.use(express.json())
 app.use(cors());
-connectDB()
+
 
 const PORT = process.env.PORT || 5000;
 

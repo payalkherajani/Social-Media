@@ -41,10 +41,14 @@ const loginUser = async (req, res) => {
         const { email, password } = req.body
         const userExists = await User.findOne({ email })
         if (userExists) {
-            const isPasswordMatch = bcrypt.compare(password, userExists.password)
+            const isPasswordMatch = await bcrypt.compare(password, userExists.password)
+
             if (isPasswordMatch) {
                 const token = generateToken(userExists._id)
-                return res.status(200).json({ success: false, message: 'Login Successfull', token })
+
+                const loggedInUserDetails = { 'id': userExists._id, 'name': userExists.name, 'email': userExists.email, 'following': userExists.following, 'followers': userExists.followers, 'bio': userExists.bio }
+
+                return res.status(200).json({ success: true, message: 'Login Successfull', token, loggedInUserDetails })
             } else {
                 return res.status(400).json({ success: false, message: 'Invalid Credentials' })
             }

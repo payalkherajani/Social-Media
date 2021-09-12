@@ -1,30 +1,27 @@
-import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
+import { createSlice, createAsyncThunk, current } from "@reduxjs/toolkit";
 import axios from 'axios'
 
-
-
 export const registerANewUser = createAsyncThunk(
-    "register/user", async ({ name, email, password }, { fulfillWithValue, rejectWithValue }) => {
+    "register/user", async ({ name, email, password, navigate }, { fulfillWithValue, rejectWithValue }) => {
         try {
-
             const { data } = await axios.post(`${process.env.REACT_APP_URL}/api/users/register`, { name, email, password })
-
             if (data?.success) {
+                navigate('/')
                 return fulfillWithValue(data)
             }
-
         } catch (err) {
-
             return rejectWithValue(err.response.data)
         }
     }
 )
 
 export const loginUser = createAsyncThunk(
-    "login/user", async ({ email, password }, { fulfillWithValue, rejectWithValue }) => {
+    "login/user", async ({ email, password, navigate }, { fulfillWithValue, rejectWithValue }) => {
         try {
-            const { data } = axios.post(`${process.env.REACT_APP_URL}/api/users/login`, { email, password })
+            const { data } = await axios.post(`${process.env.REACT_APP_URL}/api/users/login`, { email, password })
+
             if (data?.success) {
+                navigate('/profile')
                 return fulfillWithValue(data)
             }
         } catch (err) {
@@ -40,9 +37,12 @@ export const UserSlice = createSlice({
         token: '',
         isUserLoggedIn: false,
         status: 'idle',
-        error: ''
+        error: '',
+        userDetails: {}
     },
-    reducers: {},
+    reducers: {
+
+    },
     extraReducers: {
         [registerANewUser.fulfilled]: (state) => {
             state.status = 'Success'
@@ -53,8 +53,10 @@ export const UserSlice = createSlice({
         },
         [loginUser.fulfilled]: (state, action) => {
             state.isUserLoggedIn = true;
-            state.token = action.payload.token;
+            state.token = action?.payload?.token;
             state.status = 'Success'
+            state.userDetails = action?.payload?.loggedInUserDetails
+            localStorage.setItem('token', action?.payload?.token)
         },
         [loginUser.rejected]: (state, action) => {
             state.error = action.payload.message;

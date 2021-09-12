@@ -9,7 +9,6 @@ const Register = () => {
 
     const dispatch = useDispatch()
     const navigate = useNavigate()
-    const user = useSelector((state) => state.user)
 
     const [formData, setFormData] = useState({
         name: '',
@@ -28,17 +27,12 @@ const Register = () => {
     const onSubmitHandler = (e) => {
         e.preventDefault()
         if (confirmpassword === password) {
-            dispatch(registerANewUser({ name, email, password }))
-            if (user.status === 'Success') {
-                navigate('/register')
-            }
-            else if (user.status === 'Failed') {
-                console.log(user, "rejected")
-                toast.error(user.error)
-            }
+            dispatch(registerANewUser({ name, email, password, navigate }))
         } else {
             toast.error(`Passwords Don't Match`)
         }
+
+        setFormData({ ...formData, email: '', password: '', confirmpassword: '', name: '' })
     }
 
     return (
@@ -50,15 +44,54 @@ const Register = () => {
                 className="flex flex-col p-6 md:w-3/4 m-auto lg:w-8/12 shadow-xl bg-white"
                 onSubmit={onSubmitHandler}
             >
-                <input type="text" placeholder="Full Name" name="name" value={name} onChange={onChangeHandler} className="px-4 py-3 mb-8 text-pink-500  border-0 border-2 border-pink-600 focus:border-pink-200 hover:border-pink-300 focus:outline-none mb-4" />
+                <input
+                    type="text"
+                    placeholder="Full Name"
+                    name="name"
+                    value={name}
+                    onChange={onChangeHandler}
+                    className="px-4 py-3 mb-8 text-pink-500  border-0 border-2 border-pink-600 focus:border-pink-200 hover:border-pink-300 focus:outline-none mb-4"
+                    required={true}
 
-                <input type="text" placeholder="Email" name="email" value={email} onChange={onChangeHandler} className="px-4 py-3 mb-8 text-pink-500  border-0 border-2 border-pink-600 focus:border-pink-200 hover:border-pink-300 focus:outline-none mb-4" />
+                />
 
-                <input type="password" placeholder="Password" name="password" value={password} onChange={onChangeHandler} className="px-4 py-3 mb-8 text-pink-500  border-0 border-2 border-pink-600 focus:border-pink-200 hover:border-pink-300 focus:outline-none mb-4" />
+                <input
+                    type="text"
+                    placeholder="Email"
+                    name="email"
+                    value={email}
+                    onChange={onChangeHandler}
+                    className="px-4 py-3 mb-8 text-pink-500  border-0 border-2 border-pink-600 focus:border-pink-200 hover:border-pink-300 focus:outline-none mb-4"
+                    required={true}
 
-                <input type="password" placeholder="Confirm Password" name="confirmpassword" value={confirmpassword} onChange={onChangeHandler} className="px-4 py-3 mb-8 text-pink-500  border-0 border-2 border-pink-600 focus:border-pink-200 hover:border-pink-300 focus:outline-none mb-4" />
+                />
 
-                <button className="text-white py-2 px-4 font-semibold rounded-lg bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:ring-opacity-50 mb-4">Register</button>
+                <input
+                    type="password"
+                    placeholder="Password"
+                    name="password"
+                    value={password}
+                    onChange={onChangeHandler}
+                    className="px-4 py-3 mb-8 text-pink-500  border-0 border-2 border-pink-600 focus:border-pink-200 hover:border-pink-300 focus:outline-none mb-4"
+                    required={true}
+                />
+
+                <input
+                    type="password"
+                    placeholder="Confirm Password"
+                    name="confirmpassword"
+                    value={confirmpassword}
+                    onChange={onChangeHandler}
+                    className="px-4 py-3 mb-8 text-pink-500  border-0 border-2 border-pink-600 focus:border-pink-200 hover:border-pink-300 focus:outline-none mb-4"
+                    required={true}
+
+                />
+
+                <button
+                    className="text-white py-2 px-4 font-semibold rounded-lg bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:ring-opacity-50 mb-4"
+                >
+                    Register
+                </button>
 
                 <p>Already have an account?
                     <span className="text-pink-800 underline">

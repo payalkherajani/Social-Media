@@ -5,11 +5,17 @@ import axios from 'axios'
 
 export const registerANewUser = createAsyncThunk(
     "register/user", async ({ name, email, password }, { fulfillWithValue, rejectWithValue }) => {
-        const { data } = await axios.post(`${process.env.REACT_API_URL}/api/users/register`, { name, email, password })
-        if (data?.success) {
-            fulfillWithValue(data)
-        } else {
-            rejectWithValue(data)
+        try {
+
+            const { data } = await axios.post(`${process.env.REACT_APP_URL}/api/users/register`, { name, email, password })
+
+            if (data?.success) {
+                return fulfillWithValue(data)
+            }
+
+        } catch (err) {
+            console.log(err)
+            return rejectWithValue(err.response.data)
         }
     }
 )
@@ -28,7 +34,8 @@ export const UserSlice = createSlice({
         [registerANewUser.fulfilled]: (state, action) => {
             state.status = 'success'
         },
-        [registerANewUser.rejectWithValue]: (state, action) => {
+        [registerANewUser.rejected]: (state, action) => {
+            console.log(action.payload)
             state.status = 'rejected';
             state.error = action.payload.message
         }

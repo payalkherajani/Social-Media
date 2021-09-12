@@ -6,6 +6,9 @@ import { registerANewUser } from './UserSlice'
 import { Navigate } from 'react-router-dom'
 
 
+
+console.log(process.env.REACT_APP_URL)
+
 const Register = () => {
 
     const dispatch = useDispatch()

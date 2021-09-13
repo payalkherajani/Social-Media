@@ -41,7 +41,14 @@ export const UserSlice = createSlice({
         userDetails: {}
     },
     reducers: {
-
+        logoutButtonPressed: (state) => {
+            state.token = '';
+            state.isUserLoggedIn = false;
+            state.status = 'idle';
+            state.error = '';
+            state.userDetails = {};
+            localStorage.clear()
+        }
     },
     extraReducers: {
         [registerANewUser.fulfilled]: (state) => {
@@ -64,5 +71,9 @@ export const UserSlice = createSlice({
         }
     }
 })
+
+export const {
+    logoutButtonPressed
+} = UserSlice.actions
 
 export default UserSlice.reducer

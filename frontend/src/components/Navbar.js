@@ -2,15 +2,17 @@ import React, { useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useNavigate } from 'react-router';
 import { Link } from 'react-router-dom';
+import { logoutButtonPressed } from '../features/user/UserSlice';
 
 const Navbar = () => {
 
     const [open, setOpen] = useState(false)
 
     const navigate = useNavigate()
+    const dispatch = useDispatch()
 
     const logout = () => {
-        localStorage.clear();
+        dispatch(logoutButtonPressed())
         navigate('/');
     };
 
@@ -33,7 +35,6 @@ const Navbar = () => {
                     </button>
                 </div>
                 <nav className="md:hidden">
-
                     {
                         open &&
                         <ul className="flex justify-start items-start text-white  bg-pink-400  mb-4">

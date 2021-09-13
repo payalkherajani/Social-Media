@@ -52,10 +52,10 @@ export const UserSlice = createSlice({
     },
     extraReducers: {
         [registerANewUser.fulfilled]: (state) => {
-            state.status = 'Success'
+            state.status = ' Registration Success'
         },
         [registerANewUser.rejected]: (state, action) => {
-            state.status = 'Failed';
+            state.status = 'Registartion Failed';
             state.error = action.payload
         },
         [loginUser.fulfilled]: (state, action) => {

@@ -5,6 +5,7 @@ import './App.css';
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import { Navbar } from './components'
+import Footer from './components/Footer';
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
           </Routes>
         </BrowserRouter>
       </Fragment>
+      <Footer />
 
       <ToastContainer
         position="top-right"

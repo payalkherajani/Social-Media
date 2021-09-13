@@ -17,6 +17,7 @@ function App() {
             <Route path="/" element={<Login />} />
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />
+            <Route path="/feed" element={<Home />} />
           </Routes>
         </BrowserRouter>
       </Fragment>

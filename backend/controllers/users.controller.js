@@ -3,6 +3,7 @@ const bcrypt = require('bcrypt')
 const _ = require('lodash')
 const generateToken = require('../utils/token')
 const cloudinary = require('../utils/cloudinary')
+const Post = require('../models/posts.model')
 
 
 const uploadImageToCloudinary = async (req, res) => {
@@ -173,4 +174,26 @@ const getAllUsers = async (req, res) => {
     }
 }
 
-module.exports = { registerUser, loginUser, getLoggedInUserInfo, updateUserAvatarandBio, toggleFollowing, getAllUsers, uploadImageToCloudinary }
+
+const getLoggedInUserFeed = async (req, res) => {
+    try {
+        const userId = req.user
+        const followingUserIDS = await User.findOne({ _id: userId })
+
+        if (followingUserIDS.following.length === 0) {
+            return res.status(200).json({ success: true, message: 'Follow Someone to see their posts' })
+        }
+
+        const posts = await Promise.all(followingUserIDS.following.map(async ({ user }) => {
+            const postOfUser = await Post.find({ user: user })
+            return postOfUser
+        }))
+
+        return res.status(200).json({ success: true, posts })
+    } catch (err) {
+        console.log(err)
+        return res.status(500).json({ success: false, message: 'Server Error' });
+    }
+}
+
+module.exports = { registerUser, loginUser, getLoggedInUserInfo, updateUserAvatarandBio, toggleFollowing, getAllUsers, uploadImageToCloudinary, getLoggedInUserFeed }

@@ -21,7 +21,7 @@ export const loginUser = createAsyncThunk(
             const { data } = await axios.post(`${process.env.REACT_APP_URL}/api/users/login`, { email, password })
 
             if (data?.success) {
-                navigate('/profile')
+                navigate('/feed')
                 return fulfillWithValue(data)
             }
         } catch (err) {

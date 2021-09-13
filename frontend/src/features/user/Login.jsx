@@ -27,6 +27,9 @@ const Login = () => {
         if (user.status === 'Failed') {
             toast.error(user.error)
         }
+        else if (user.status === 'idle') {
+            navigate('/')
+        }
     }, [user])
 
     const onSubmitHandler = (e) => {
@@ -35,8 +38,10 @@ const Login = () => {
         setFormData({ ...formData, email: '', password: '' })
     }
 
+
+
     return (
-        localStorage.getItem('token') ? (<Navigate to="/profile" />) : (
+        user.status === 'Success' ? (<Navigate to="/feed" />) : (
             <div className="container mx-auto p-4 min-h-screen bg-pink-50">
 
                 <h2 className="text-2xl font-medium mb-8">SIGN IN</h2>

@@ -18,36 +18,32 @@ const Navbar = () => {
 
     return (
         user.token ? (
-            <div className="container items-center bg-pink-400 py-8 px-4 flex md:px-8 text-white flex justify-between" style={{ maxWidth: '100%' }}>
+            <>
+                <div className="container items-center bg-pink-400 py-8 px-4 flex flex-wrap md:px-8 text-white flex justify-between" style={{ maxWidth: '100%' }}>
 
-                <h1><strong>Panchayat</strong></h1>
+                    <h1><strong>Panchayat</strong></h1>
 
-                <div className="flex gap-2 flex-wrap hidden md:flex">
-                    <button className="mr-2"><i className="fas fa-user"></i> Profile </button>
-                    <button className="mr-2"><i className="fas fa-users"></i> Suggestions </button>
-                    <button className="mr-2" onClick={logout}><i className="fas fa-sign-out-alt"></i> Logout</button>
+                    <div className="flex gap-2 flex-wrap hidden md:flex">
+                        <button className="mr-2"><i className="fas fa-user"></i> Profile </button>
+                        <button className="mr-2"><i className="fas fa-users"></i> Suggestions </button>
+                        <button className="mr-2" onClick={logout}><i className="fas fa-sign-out-alt"></i> Logout</button>
+                    </div>
+                    <button className="md:hidden" onClick={() => setOpen(!open)}>
+                        <i className="fas fa-bars text-2xl"></i>
+                    </button>
                 </div>
+                <nav className="md:hidden">
 
-                <header>
-                    <nav className=" flex justify-between flex-wrap md:hidden">
-                        <button onClick={() => setOpen(!open)}>
-                            <i className="fas fa-bars text-2xl"></i>
-                        </button>
-                        {
-                            open &&
-                            <ul style={{ flexBasis: '100%', display: 'block', flexGrow: 1 }}>
-                                <button className="mr-2"><i className="fas fa-user"></i> Profile </button>
-                                <button className="mr-2"><i className="fas fa-users"></i> Suggestions </button>
-                                <button className="mr-2" onClick={logout}><i className="fas fa-sign-out-alt"></i> Logout</button>
-                            </ul>
-                        }
-                    </nav>
-                </header>
-
-
-
-
-            </div>
+                    {
+                        open &&
+                        <ul className="flex justify-start items-start text-white  bg-pink-400  mb-4">
+                            <button className="mr-2 mb-2 px-4"><i className="fas fa-user"></i> Profile </button>
+                            <button className="mr-2 mb-2 px-4"><i className="fas fa-users"></i> Suggestions </button>
+                            <button className="mr-2 mb-2 px-4" onClick={logout}><i className="fas fa-sign-out-alt"></i> Logout</button>
+                        </ul>
+                    }
+                </nav>
+            </>
         ) : (
             <div className="container items-center bg-pink-400 py-8 px-4 flex md:px-8 text-white flex justify-between" style={{ maxWidth: '100%' }}>
                 <h1><strong>Panchayat</strong></h1>

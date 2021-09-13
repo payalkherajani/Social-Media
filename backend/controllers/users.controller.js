@@ -17,12 +17,16 @@ const registerUser = async (req, res) => {
 
         password = bcrypt.hashSync(password, 10)
 
+        const dummyAvatar = gravatar.url(email, { s: '200', r: 'pg', d: 'robohash' }, true)
+
         const user = new User({
             name,
             email,
             password,
             followers: [],
-            following: []
+            following: [],
+            avatar: dummyAvatar
+
         })
 
         await user.save()

@@ -31,6 +31,27 @@ export const loginUser = createAsyncThunk(
 )
 
 
+export const getLoggedInUser = createAsyncThunk(
+    "loggedInUser", async () => {
+        try {
+            const { data } = await axios.get(`${process.env.REACT_APP_URL}/api/users`,
+                {
+                    headers: {
+                        'x-auth-token': localStorage.getItem('token')
+                    }
+                }
+            )
+
+            if (data?.success) {
+                return data
+            }
+        } catch (err) {
+            return err.response.data
+        }
+    }
+)
+
+
 export const UserSlice = createSlice({
     name: 'user',
     initialState: {
@@ -67,6 +88,16 @@ export const UserSlice = createSlice({
         },
         [loginUser.rejected]: (state, action) => {
             state.error = action.payload.message;
+            state.status = 'Failed'
+        },
+        [getLoggedInUser.fulfilled]: (state, action) => {
+            state.isUserLoggedIn = true;
+            state.token = localStorage.getItem('token');
+            state.status = 'Success'
+            state.userDetails = action?.payload?.loggedInUserDetails
+        },
+        [getLoggedInUser.rejected]: (state, action) => {
+            state.error = action.payload;
             state.status = 'Failed'
         }
     }

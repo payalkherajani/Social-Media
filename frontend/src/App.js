@@ -1,13 +1,26 @@
-import React, { Fragment } from 'react';
+import React, { Fragment, useEffect } from 'react';
 import { Register, Login, Profile } from './features';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import './App.css';
 import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
-import { Navbar, Home } from './components'
-import Footer from './components/Footer';
+import { Navbar, Home, Footer } from './components'
+import { useSelector, useDispatch } from 'react-redux'
+import { getLoggedInUser } from './features/user/UserSlice';
+
+
 
 function App() {
+
+  const user = useSelector(state => state.user)
+  const dispatch = useDispatch()
+
+  useEffect(() => {
+    if (localStorage.token) {
+      dispatch(getLoggedInUser())
+    }
+  }, [])
+
   return (
     <div className="App min-h-screen">
       <Fragment>

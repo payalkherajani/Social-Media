@@ -14,10 +14,11 @@ const Register = () => {
         name: '',
         email: '',
         password: '',
-        confirmpassword: ''
+        confirmpassword: '',
+        image: ''
     })
 
-    const { name, email, password, confirmpassword } = formData
+    const { name, email, password, confirmpassword, image } = formData
 
     const onChangeHandler = (e) => {
         const { name, value } = e.target
@@ -27,6 +28,7 @@ const Register = () => {
     const onSubmitHandler = (e) => {
         e.preventDefault()
         if (confirmpassword === password) {
+
             dispatch(registerANewUser({ name, email, password, navigate }))
         } else {
             toast.error(`Passwords Don't Match`)
@@ -34,6 +36,13 @@ const Register = () => {
 
         setFormData({ ...formData, email: '', password: '', confirmpassword: '', name: '' })
     }
+
+    const handleImageSelected = (e) => {
+        const { target } = e;
+        setFormData({ ...formData, image: target.files[0] })
+    }
+
+
 
     return (
         <div className="container mx-auto p-4 min-h-screen bg-pink-50">
@@ -43,6 +52,7 @@ const Register = () => {
             <form
                 className="flex flex-col p-6 md:w-3/4 m-auto lg:w-8/12 shadow-xl bg-white"
                 onSubmit={onSubmitHandler}
+                encType="multipart/form-data"
             >
                 <input
                     type="text"
@@ -86,6 +96,14 @@ const Register = () => {
                     required={true}
 
                 />
+
+                {/* <label
+                    className="w-64 flex flex-col items-center px-4 py-6 bg-white rounded-md shadow-md tracking-wide uppercase border border-blue cursor-pointer hover:bg-pink-600 hover:text-white text-pink-600 ease-linear transition-all duration-150 mb-8">
+                    <i className="fas fa-cloud-upload-alt fa-3x"></i>
+                    <span className="mt-2 text-base leading-normal">Profile Pic</span>
+                    <input type='file' className="hidden" required={true} onChange={handleImageSelected} />
+                </label> */}
+
 
                 <button
                     className="text-white py-2 px-4 font-semibold rounded-lg bg-pink-600 hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-pink-600 focus:ring-opacity-50 mb-4"

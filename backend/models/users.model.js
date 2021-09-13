@@ -38,6 +38,9 @@ const userSchema = new Schema({
     bio: {
         type: String,
         default: null
+    },
+    cloudinary_id: {
+        type: String
     }
 
 },

@@ -56,7 +56,7 @@ export const UserSlice = createSlice({
         },
         [registerANewUser.rejected]: (state, action) => {
             state.status = 'Failed';
-            state.error = action.payload.message
+            state.error = action.payload
         },
         [loginUser.fulfilled]: (state, action) => {
             state.isUserLoggedIn = true;

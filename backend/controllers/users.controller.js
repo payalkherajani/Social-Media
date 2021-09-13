@@ -1,10 +1,24 @@
 const User = require('../models/users.model')
 const bcrypt = require('bcrypt')
 const _ = require('lodash')
-const generateToken = require('../utlis/token')
+const generateToken = require('../utils/token')
+const cloudinary = require('../utils/cloudinary')
+
+
+const uploadImageToCloudinary = async (req, res) => {
+    try {
+        const result = await cloudinary.uploader.upload(req.file.path);
+        return res.status(200).json({ success: true, result })
+    } catch (err) {
+        console.log(err)
+        res.send('server error')
+    }
+
+}
 
 const registerUser = async (req, res) => {
     try {
+
         let { name, email, password } = req.body
         if (!name || !email || !password) {
             return res.status(400).json({ success: false, message: 'Missing required fields' })
@@ -16,8 +30,8 @@ const registerUser = async (req, res) => {
         }
 
         password = bcrypt.hashSync(password, 10)
-
-        const dummyAvatar = gravatar.url(email, { s: '200', r: 'pg', d: 'robohash' }, true)
+        // const result = await cloudinary.uploader.upload(req.file.path);
+        // console.log(result)
 
         const user = new User({
             name,
@@ -25,12 +39,9 @@ const registerUser = async (req, res) => {
             password,
             followers: [],
             following: [],
-            avatar: dummyAvatar
-
         })
 
         await user.save()
-
         res.status(200).json({ success: true, user, message: 'Registration Successfull' })
 
     } catch (err) {
@@ -161,4 +172,4 @@ const getAllUsers = async (req, res) => {
     }
 }
 
-module.exports = { registerUser, loginUser, getLoggedInUserInfo, updateUserAvatarandBio, toggleFollowing, getAllUsers }
+module.exports = { registerUser, loginUser, getLoggedInUserInfo, updateUserAvatarandBio, toggleFollowing, getAllUsers, uploadImageToCloudinary }

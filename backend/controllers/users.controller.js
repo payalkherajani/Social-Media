@@ -186,7 +186,7 @@ const getLoggedInUserFeed = async (req, res) => {
 
         if (followingUserIDS.following.length > 0) {
             const posts = await Promise.all(followingUserIDS.following.map(async ({ user }) => {
-                const postOfUser = await Post.find({ user: user }).sort({ 'updatedAt': -1 })
+                const postOfUser = await Post.find({ user: user }).populate('user', ['name']).sort({ 'updatedAt': -1 })
                 return postOfUser
             }))
             return res.status(200).json({ success: true, posts })

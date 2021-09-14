@@ -51,16 +51,16 @@ const Feed = () => {
                                 return <div key={post._id}
                                     className="max-w-sm w-full lg:max-w-full lg:flex mb-4">
 
-                                    <div className=" border border-gray-400 h-48 lg:h-auto lg:w-48 flex-none bg-cover bg-contain bg-no-repeat bg-center rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden" style={{
+                                    <div className=" border border-gray-400 h-48 lg:h-auto lg:w-48 flex-none bg-contain bg-no-repeat bg-center rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden" style={{
                                         backgroundImage:
                                             `url(${post.image_of_post})` || `url('https://cdn.dribbble.com/users/2243610/screenshots/14147441/media/0099de4c63da0f32770c4694235a504c.jpg')`
                                     }}>
 
                                     </div>
 
-                                    <div className="border-r border-b border-l border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal">
+                                    <div className="border-r border-b border-l border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal flex-grow">
 
-                                        <div className="flex justify-between items-center mb-4">
+                                        <div className="flex justify-between items-center  mb-4">
                                             <div className="flex justify-center items-center">
                                                 <img className="w-10 h-10 rounded-full mr-4" src={"https://cdn.dribbble.com/users/3844750/screenshots/10729124/media/2523facfa3e436b8331c316dcc4998f2.jpg"} alt="Avatar User" />
                                                 <div className="text-sm">

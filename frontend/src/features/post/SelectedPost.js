@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import { useDispatch, useSelector } from 'react-redux'
 import { useParams } from 'react-router'
-import { addComment, getSelectedPostDetails, goBackButtonIsPressed } from './postSlice'
+import { addComment, deleteComment, getSelectedPostDetails, goBackButtonIsPressed } from './postSlice'
 import { Link } from 'react-router-dom'
 import dateformat from 'dateformat'
 
@@ -38,6 +38,10 @@ const SelectedPost = () => {
         dispatch(addComment({ 'postId': id, 'text': commentText }))
         setShowBox(false)
         setCommentText('')
+    }
+
+    const handleDeleteComment = (commentId) => {
+        dispatch(deleteComment({ 'postId': id, commentId }))
     }
 
     return (
@@ -121,7 +125,11 @@ const SelectedPost = () => {
                                                         <strong className="mr-2"> Description:</strong>
                                                         {oneComment.text}
                                                     </p>
-                                                    {loggedInuser?.userDetails?.id == oneComment.user ? (<i className="fas fa-trash text-2xl" style={{ color: 'red' }}></i>) : (null)}
+                                                    {loggedInuser?.userDetails?.id == oneComment.user ? (
+                                                        <i className="fas fa-trash text-2xl"
+                                                            style={{ color: 'red' }} onClick={() => handleDeleteComment(oneComment._id)}>
+
+                                                        </i>) : (null)}
                                                 </div>
                                             </div>
                                         )
@@ -131,7 +139,7 @@ const SelectedPost = () => {
 
 
                             </>
-                        ) : ('No Comment to show! :)')
+                        ) : ('No Comments to show! :)')
                     }
                 </div>
             </div>

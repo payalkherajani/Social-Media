@@ -65,6 +65,23 @@ export const addComment = createAsyncThunk(
     }
 )
 
+
+export const deleteComment = createAsyncThunk(
+    "delete/comment", async ({ postId, commentId }, { fulfillWithValue, rejectWithValue }) => {
+        try {
+            const { data } = await axios.delete(`${process.env.REACT_APP_URL}/api/posts/removecomment/${commentId}/${postId}`, {
+                headers: {
+                    'x-auth-token': localStorage.token
+                }
+            })
+            if (data?.success) {
+                return fulfillWithValue(data)
+            }
+        } catch (err) {
+            return rejectWithValue(err.response.data)
+        }
+    }
+)
 export const postSlice = createSlice({
     name: "post",
     initialState: {
@@ -116,7 +133,14 @@ export const postSlice = createSlice({
         },
         [addComment.rejected]: (state, action) => {
             state.status = 'Added Comment Failed';
-        }
+        },
+        [deleteComment.fulfilled]: (state, action) => {
+            state.status = 'Delete Comment Success';
+            state.selectedPostDetails = action?.payload?.post
+        },
+        [deleteComment.rejected]: (state, action) => {
+            state.status = 'Delete Comment Failed';
+        },
 
 
     }

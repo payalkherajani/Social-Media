@@ -9,6 +9,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { getLoggedInUser } from './features/user/userSlice';
 import axios from 'axios'
 import { loadFeedForUser } from './features/post/postSlice'
+import { SelectedPost } from './features/post'
 
 function App() {
 
@@ -20,19 +21,16 @@ function App() {
       if (user.token === '') {
         dispatch(getLoggedInUser())
       }
-      if (user.isUserLoggedIn) {
-        dispatch(loadFeedForUser())
-      }
 
     }
   }, [user])
 
   useEffect(() => {
     axios.defaults.headers.common["x-auth-token"] = localStorage.token;
-  }, []);
+  }, [user]);
 
   return (
-    <div className="App min-h-screen">
+    <div className="min-h-screen">
       <Fragment>
         <BrowserRouter>
           <Navbar />
@@ -41,6 +39,7 @@ function App() {
             <Route path="/register" element={<Register />} />
             <Route path="/profile" element={<Profile />} />
             <Route path="/feed" element={<Home />} />
+            <Route path='/post/:id' element={<SelectedPost />} />
           </Routes>
         </BrowserRouter>
       </Fragment>

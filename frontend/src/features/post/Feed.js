@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router'
 import { loadFeedForUser, toggleLikeButtonPressed } from './postSlice'
 import no_posts from '../../assets/no_posts.svg'
 import dateformat from 'dateformat'
+import { Link } from 'react-router-dom'
 
 
 const Feed = () => {
@@ -14,15 +15,15 @@ const Feed = () => {
     const loggedInuser = useSelector((state) => state.user)
     const posts = useSelector((state) => state.post)
 
-
-
     useEffect(() => {
         if (localStorage.token === '') {
             navigate('/')
         }
     }, [])
 
-
+    useEffect(() => {
+        dispatch(loadFeedForUser())
+    }, [])
 
     const checkIfYouHaveLiked = (likesArray) => {
         return likesArray.some(({ user }) => user == loggedInuser?.userDetails?.id)
@@ -37,21 +38,23 @@ const Feed = () => {
             <h2 className="text-center font-serif uppercase text-2xl xl:text-3xl mb-4">FEED</h2>
 
             <div className="container w-11/12 md:w-8/12 mx-auto flex flex-col items-center">
+
+                {/* condition -1 if user has no followers condition-2 follow user but no posts of that user */}
                 {
-                    posts?.feed?.length === 1 && posts?.feed[0]?.length === 0 ? (
+                    (posts?.feed?.length === 0) || (posts?.feed?.length === 1 && posts?.feed[0]?.length === 0) ? (
                         <div>
                             <h1 className="text-center text-pink-700 font-serif uppercase text-2xl xl:text-3xl mb-4">
-                                No Posts, Follow Users</h1>
+                                No Posts, Follow Users or May Be Followed User has No Posts</h1>
                             <img src={no_posts} alt="No Post SVG" />
 
                         </div>) : (
                         posts?.feed?.map((followersPostArray) => {
                             return followersPostArray.map((post) => {
 
-                                return <div key={post._id}
-                                    className="max-w-sm w-full lg:max-w-full lg:flex mb-4">
+                                return <div
+                                    className="max-w-sm w-full lg:max-w-full lg:flex mb-4" key={post._id}>
 
-                                    <div className=" border border-gray-400 h-48 lg:h-auto lg:w-48 flex-none bg-contain bg-no-repeat bg-center rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden" style={{
+                                    <div className="border border-gray-400 h-48 lg:h-auto lg:w-48 flex-none bg-contain bg-no-repeat bg-center rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden" style={{
                                         backgroundImage:
                                             `url(${post.image_of_post})` || `url('https://cdn.dribbble.com/users/2243610/screenshots/14147441/media/0099de4c63da0f32770c4694235a504c.jpg')`
                                     }}>
@@ -97,8 +100,10 @@ const Feed = () => {
                                             </div>
 
                                             <div>
-                                                <span className="ml-4 text-2xl">{post.comments.length > 0 ? (post.comments.length) : ('')} </span>
-                                                <i className="far fa-comment text-2xl"></i>
+                                                <span className="ml-4 text-2xl">
+                                                    <Link to={`/post/${post._id}`}><i className="fas fa-eye text-2xl"></i></Link>
+                                                </span>
+
 
                                             </div>
                                         </div>
@@ -109,6 +114,7 @@ const Feed = () => {
                         })
                     )
                 }
+
 
 
 

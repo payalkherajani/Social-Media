@@ -4,7 +4,11 @@ import axios from 'axios'
 export const loadFeedForUser = createAsyncThunk(
     "feed/user", async () => {
         try {
-            const { data } = await axios.get(`${process.env.REACT_APP_URL}/api/users/feed`)
+            const { data } = await axios.get(`${process.env.REACT_APP_URL}/api/users/feed`, {
+                headers: {
+                    'x-auth-token': localStorage.token
+                }
+            })
             if (data?.success) {
                 return data
             }
@@ -27,6 +31,39 @@ export const toggleLikeButtonPressed = createAsyncThunk(
     }
 )
 
+export const getSelectedPostDetails = createAsyncThunk(
+    "load/post", async ({ postId }, { fulfillWithValue, rejectWithValue }) => {
+        try {
+            const { data } = await axios.get(`${process.env.REACT_APP_URL}/api/posts/${postId}`, {
+                headers: {
+                    'x-auth-token': localStorage.token
+                }
+            })
+            if (data?.success) {
+                return fulfillWithValue(data)
+            }
+        } catch (err) {
+            return rejectWithValue(err.response.data)
+        }
+    }
+)
+
+export const addComment = createAsyncThunk(
+    "add/comment", async ({ postId, text }, { fulfillWithValue, rejectWithValue }) => {
+        try {
+            const { data } = await axios.post(`${process.env.REACT_APP_URL}/api/posts/addcomment/${postId}`, { text }, {
+                headers: {
+                    'x-auth-token': localStorage.token
+                }
+            })
+            if (data?.success) {
+                return fulfillWithValue(data)
+            }
+        } catch (err) {
+            return rejectWithValue(err.response.data)
+        }
+    }
+)
 
 export const postSlice = createSlice({
     name: "post",
@@ -34,9 +71,14 @@ export const postSlice = createSlice({
         feed: [],
         loggedInUsersPosts: [],
         status: 'idle',
-        error: ''
+        error: '',
+        selectedPostDetails: {}
     },
-    reducers: {},
+    reducers: {
+        goBackButtonIsPressed: (state) => {
+            state.selectedPostDetails = {}
+        },
+    },
     extraReducers: {
         [loadFeedForUser.fulfilled]: (state, action) => {
             state.status = 'Feed Loaded';
@@ -59,9 +101,29 @@ export const postSlice = createSlice({
         },
         [toggleLikeButtonPressed.rejected]: (state, action) => {
             state.status = 'Something went wrong in liking post'
+        },
+        [getSelectedPostDetails.fulfilled]: (state, action) => {
+            state.status = 'Post Fetch Success';
+            state.selectedPostDetails = action?.payload?.post
+        },
+        [getSelectedPostDetails.rejected]: (state, action) => {
+            state.status = 'Post Fetch Fail';
+            state.error = action?.payload?.message
+        },
+        [addComment.fulfilled]: (state, action) => {
+            state.status = 'Added Comment Success';
+            state.selectedPostDetails = action?.payload?.post
+        },
+        [addComment.rejected]: (state, action) => {
+            state.status = 'Added Comment Failed';
         }
+
 
     }
 })
+
+export const {
+    goBackButtonIsPressed
+} = postSlice.actions
 
 export default postSlice.reducer

@@ -1,5 +1,6 @@
 const Post = require('../models/posts.model')
 const _ = require('lodash')
+const User = require('../models/users.model')
 
 const addANewPost = async (req, res) => {
     try {
@@ -28,7 +29,7 @@ const addANewPost = async (req, res) => {
 const getPostByID = async (req, res) => {
     try {
         const { postId } = req.params
-        const post = await Post.findOne({ _id: postId })
+        const post = await Post.findOne({ _id: postId }).populate('user', ['name', 'avatar'])
         res.status(200).json({ success: true, post })
     } catch (err) {
         console.log(err)
@@ -105,14 +106,13 @@ const addCommentOnPostByID = async (req, res) => {
     try {
         const { postId } = req.params
         const userId = req.user
-        const post = await Post.findOne({ _id: postId })
+        const post = await Post.findOne({ _id: postId }).populate('user', ['name', 'avatar'])
         if (!post) {
             return res.status(400).json({ success: false, message: 'No Post Found' })
         }
         const { text } = req.body
-        console.log(post)
-        const addComment = [...post._doc.comments, { user: userId, text }]
-        console.log(addComment)
+        const user = await User.findOne({ _id: userId })
+        const addComment = [...post._doc.comments, { user: userId, text, name: user.name }]
         const updatedComment = { ...post._doc, comments: addComment }
         const updatedPost = _.extend(post, updatedComment)
         await updatedPost.save()

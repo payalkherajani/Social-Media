@@ -8,8 +8,7 @@ import { Navbar, Home, Footer } from './components'
 import { useSelector, useDispatch } from 'react-redux'
 import { getLoggedInUser } from './features/user/userSlice';
 import axios from 'axios'
-import { loadFeedForUser } from './features/post/postSlice'
-import { SelectedPost } from './features/post'
+import { SelectedPost, Suggestion } from './features/post'
 
 function App() {
 
@@ -40,6 +39,7 @@ function App() {
             <Route path="/profile" element={<Profile />} />
             <Route path="/feed" element={<Home />} />
             <Route path='/post/:id' element={<SelectedPost />} />
+            <Route path='/suggestion' element={<Suggestion />} />
           </Routes>
         </BrowserRouter>
       </Fragment>

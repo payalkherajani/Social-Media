@@ -26,8 +26,14 @@ const Navbar = () => {
                     <h1 className="uppercase"><strong>Panchayat</strong></h1>
 
                     <div className="flex gap-2 flex-wrap hidden md:flex">
-                        <button className="mr-2 uppercase"><i className="fas fa-user"></i> Profile </button>
-                        <button className="mr-2 uppercase"><i className="fas fa-users"></i> Suggestions </button>
+                        <Link to='/profile'><button className="mr-2 uppercase">
+                            <i className="fas fa-user"></i>
+                            Profile
+                        </button> </Link>
+                        <Link to='/suggestion'><button className="mr-2 uppercase">
+                            <i className="fas fa-users"></i>
+                            Suggestions
+                        </button></Link>
                         <button className="mr-2 uppercase" onClick={logout}><i className="fas fa-sign-out-alt"></i> Logout</button>
                     </div>
                     <button className="md:hidden" onClick={() => setOpen(!open)}>
@@ -38,8 +44,15 @@ const Navbar = () => {
                     {
                         open &&
                         <ul className="flex justify-start items-start text-white  bg-pink-400  mb-4">
-                            <button className="mr-2 mb-2 px-4 uppercase"><i className="fas fa-user"></i> Profile </button>
-                            <button className="mr-2 mb-2 px-4 uppercase"><i className="fas fa-users"></i> Suggestions </button>
+
+                            <Link to='/profile'>
+                                <button className="mr-2 mb-2 px-4 uppercase"><i className="fas fa-user"></i> Profile </button>
+                            </Link>
+
+                            <Link to='/suggestion'>
+                                <button className="mr-2 mb-2 px-4 uppercase"><i className="fas fa-users"></i> Suggestions </button>
+                            </Link>
+
                             <button className="mr-2 mb-2 px-4 uppercase" onClick={logout}><i className="fas fa-sign-out-alt"></i> Logout</button>
                         </ul>
                     }

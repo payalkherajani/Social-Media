@@ -7,8 +7,8 @@ import 'react-toastify/dist/ReactToastify.css';
 import { Navbar, Home, Footer } from './components'
 import { useSelector, useDispatch } from 'react-redux'
 import { getLoggedInUser } from './features/user/userSlice';
-
-
+import axios from 'axios'
+import { loadFeedForUser } from './features/post/postSlice'
 
 function App() {
 
@@ -17,9 +17,19 @@ function App() {
 
   useEffect(() => {
     if (localStorage.token) {
-      dispatch(getLoggedInUser())
+      if (user.token === '') {
+        dispatch(getLoggedInUser())
+      }
+      if (user.isUserLoggedIn) {
+        dispatch(loadFeedForUser())
+      }
+
     }
-  }, [])
+  }, [user])
+
+  useEffect(() => {
+    axios.defaults.headers.common["x-auth-token"] = localStorage.token;
+  }, []);
 
   return (
     <div className="App min-h-screen">

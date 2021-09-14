@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router'
-import { loadFeedForUser } from './postSlice'
+import { loadFeedForUser, toggleLikeButtonPressed } from './postSlice'
 import no_posts from '../../assets/no_posts.svg'
 import dateformat from 'dateformat'
 
@@ -11,8 +11,9 @@ const Feed = () => {
     const dispatch = useDispatch()
     const navigate = useNavigate()
 
-    const user = useSelector((state) => state.user)
+    const loggedInuser = useSelector((state) => state.user)
     const posts = useSelector((state) => state.post)
+
 
 
     useEffect(() => {
@@ -21,29 +22,32 @@ const Feed = () => {
         }
     }, [])
 
-    useEffect(() => {
-        dispatch(loadFeedForUser())
 
-    }, [user.following])
 
-    console.log(posts.feed)
+    const checkIfYouHaveLiked = (likesArray) => {
+        return likesArray.some(({ user }) => user == loggedInuser?.userDetails?.id)
+    }
+
+    const toggleLike = (postId) => {
+        dispatch(toggleLikeButtonPressed({ postId }))
+    }
 
     return (
         <>
             <h2 className="text-center font-serif uppercase text-2xl xl:text-3xl mb-4">FEED</h2>
 
-            <div className="container w-11/12 md:w-8/12 mx-auto flex flex-col">
+            <div className="container w-11/12 md:w-8/12 mx-auto flex flex-col items-center">
                 {
-                    posts.feed.length === 1 && posts.feed[0].length === 0 ? (
+                    posts?.feed?.length === 1 && posts?.feed[0]?.length === 0 ? (
                         <div>
                             <h1 className="text-center text-pink-700 font-serif uppercase text-2xl xl:text-3xl mb-4">
                                 No Posts, Follow Users</h1>
                             <img src={no_posts} alt="No Post SVG" />
 
                         </div>) : (
-                        posts.feed.map((followersPostArray) => {
+                        posts?.feed?.map((followersPostArray) => {
                             return followersPostArray.map((post) => {
-                                console.log(post.image_of_post, "45")
+
                                 return <div key={post._id}
                                     className="max-w-sm w-full lg:max-w-full lg:flex mb-4">
 
@@ -74,8 +78,29 @@ const Feed = () => {
                                         <hr />
 
                                         <div className="flex mt-4 justify-between">
-                                            <i className="far fa-heart text-2xl"></i>
-                                            <i className="far fa-comment text-2xl"></i>
+
+                                            <div>
+                                                <span className="ml-4 text-2xl">{post.likes.length > 0 ? (post.likes.length) : ('')} </span>
+                                                {
+                                                    checkIfYouHaveLiked(post.likes) ?
+                                                        (
+                                                            <i
+                                                                className="fas fa-heart text-2xl"
+                                                                onClick={() => toggleLike(post._id)}
+                                                                style={{ color: 'red' }}
+                                                            >
+
+                                                            </i>) :
+                                                        (<i className="far fa-heart text-2xl" onClick={() => toggleLike(post._id)}></i>)
+                                                }
+
+                                            </div>
+
+                                            <div>
+                                                <span className="ml-4 text-2xl">{post.comments.length > 0 ? (post.comments.length) : ('')} </span>
+                                                <i className="far fa-comment text-2xl"></i>
+
+                                            </div>
                                         </div>
 
                                     </div>

@@ -164,10 +164,14 @@ const toggleFollowing = async (req, res) => {
 }
 
 
-const getAllUsers = async (req, res) => {
+const getSuggestions = async (req, res) => {
     try {
+        const userId = req.user
         const allUsers = await User.find({})
-        return res.status(200).json({ success: true, users: allUsers })
+        const loggedInUser = await User.findOne({ _id: userId })
+        const filterUsers = allUsers.filter(({ _id }) => _id != userId &&
+            !loggedInUser.following.some(({ user }) => user != _id))  //need to test this logic more
+        return res.status(200).json({ success: true, users: filterUsers })
     } catch (err) {
         console.log(err)
         return res.status(500).json({ success: false, message: 'Server Error' });
@@ -180,20 +184,20 @@ const getLoggedInUserFeed = async (req, res) => {
         const userId = req.user
         const followingUserIDS = await User.findOne({ _id: userId })
 
-        if (followingUserIDS.following.length === 0) {
-            return res.status(200).json({ success: true, message: 'Follow Someone to see their posts' })
+        if (followingUserIDS.following.length > 0) {
+            const posts = await Promise.all(followingUserIDS.following.map(async ({ user }) => {
+                const postOfUser = await Post.find({ user: user })
+                return postOfUser
+            }))
+            return res.status(200).json({ success: true, posts })
         }
 
-        const posts = await Promise.all(followingUserIDS.following.map(async ({ user }) => {
-            const postOfUser = await Post.find({ user: user })
-            return postOfUser
-        }))
+        res.status(200).json({ success: true, posts: [] })
 
-        return res.status(200).json({ success: true, posts })
     } catch (err) {
         console.log(err)
         return res.status(500).json({ success: false, message: 'Server Error' });
     }
 }
 
-module.exports = { registerUser, loginUser, getLoggedInUserInfo, updateUserAvatarandBio, toggleFollowing, getAllUsers, uploadImageToCloudinary, getLoggedInUserFeed }
+module.exports = { registerUser, loginUser, getLoggedInUserInfo, updateUserAvatarandBio, toggleFollowing, getSuggestions, uploadImageToCloudinary, getLoggedInUserFeed }

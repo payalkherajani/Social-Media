@@ -6,7 +6,7 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import { Navbar, Home, Footer } from './components'
 import { useSelector, useDispatch } from 'react-redux'
-import { getLoggedInUser } from './features/user/UserSlice';
+import { getLoggedInUser } from './features/user/userSlice';
 
 
 

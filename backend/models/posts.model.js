@@ -6,6 +6,10 @@ const postSchema = new Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Users'
     },
+    caption: {
+        type: String,
+        required: true
+    },
     description: {
         type: String,
         max: 150,

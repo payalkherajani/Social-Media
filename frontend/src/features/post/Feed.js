@@ -1,65 +1,111 @@
 import React, { useEffect } from 'react'
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router'
+import { loadFeedForUser } from './postSlice'
+import no_posts from '../../assets/no_posts.svg'
 
 
 const Feed = () => {
 
-    const user = useSelector((state) => state.user)
+    const dispatch = useDispatch()
     const navigate = useNavigate()
+
+    const user = useSelector((state) => state.user)
+    const posts = useSelector((state) => state.post)
 
 
     useEffect(() => {
-        if (user.status === 'idle') {
+        if (localStorage.token === '') {
             navigate('/')
         }
     }, [])
 
+    useEffect(() => {
+        dispatch(loadFeedForUser())
+
+    }, [user.following])
+
     return (
-        <div>
-            <h2 className="text-center font-serif uppercase text-2xl xl:text-3xl">FEED</h2>
-            {/* <!-- container for all cards --> */}
-            <div className="container w-100 lg:w-4/5 mx-auto flex flex-col">
+        <>
+            <h2 className="text-center font-serif uppercase text-2xl xl:text-3xl mb-4">FEED</h2>
 
-                {/* <!-- card --> */}
-                <div className="flex flex-col md:flex-row overflow-hidden bg-white rounded-lg shadow-xl  mt-4 w-100 mx-2">
+            <div className="container w-11/12 md:w-8/12 mx-auto flex flex-col">
+                {
+                    posts.feed.length === 0 ? (
+                        <div>
+                            <h1>No Posts, Follow Users</h1>
+                            <img src={no_posts} alt="No Post SVG" />
 
-                    {/* <!-- media --> */}
-                    <div className="h-64 w-auto md:w-1/2">
-                        <img className="inset-0 h-full w-full object-cover object-center" src="https://cdn.dribbble.com/users/2268251/screenshots/5903041/dribla.jpg?compress=1&resize=800x600" />
-                    </div>
+                        </div>) : (
+                        posts.feed.map((followersPostArray) => {
+                            return followersPostArray.map((post) => {
+                                return <div key={post._id}
+                                    className="max-w-sm w-full lg:max-w-full lg:flex mb-4">
 
-                    {/* <!-- content --> */}
-                    <div className="w-full py-4 px-6 text-gray-800 flex flex-col justify-between">
-                        <h3 className="font-semibold text-lg leading-tight truncate">title</h3>
-                        <p className="mt-2">
-                            paragraph
-                        </p>
-                        <p className="text-sm text-gray-700 uppercase tracking-wide font-semibold mt-2">
-                            author &bull; date
-                        </p>
-                    </div>
-                </div>
+                                    <div className="h-48 lg:h-auto lg:w-48 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden" style={{
+                                        backgroundImage:
+                                            `url('https://cdn.dribbble.com/users/2243610/screenshots/14147441/media/0099de4c63da0f32770c4694235a504c.jpg')`
+                                    }}>
+
+                                    </div>
+
+                                    <div className="border-r border-b border-l border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal">
+
+                                        <div className="flex justify-between items-center mb-4">
+                                            <div className="flex justify-center items-center">
+                                                <img className="w-10 h-10 rounded-full mr-4" src={"https://cdn.dribbble.com/users/3844750/screenshots/10729124/media/2523facfa3e436b8331c316dcc4998f2.jpg"} alt="Avatar User" />
+                                                <div className="text-sm">
+                                                    <p className="text-gray-900 leading-none">Jonathan Reinink</p>
+                                                </div>
+                                            </div>
+                                            <div className="text-gray-600">{post.updatedAt}</div>
+                                        </div>
+
+                                        <div className="mb-8 text-left">
+                                            <div className="text-gray-900 font-bold text-xl mb-2">Can coffee make you a better developer?</div>
+                                            <p className="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.</p>
+                                        </div>
+
+                                        <hr />
+
+                                        <div className="flex mt-4 justify-between">
+                                            <i className="far fa-heart text-2xl"></i>
+                                            <i className="far fa-comment text-2xl"></i>
+                                        </div>
+
+                                    </div>
+                                </div>
+                            })
+                        })
+                    )
+                }
 
 
-                <div className="flex flex-col md:flex-row overflow-hidden bg-white rounded-lg shadow-xl  mt-4 w-100 mx-2">
-
-                    {/* <!-- content --> */}
-                    <div className="w-full py-4 px-6 text-gray-800 flex flex-col justify-between">
-                        <h3 className="font-semibold text-lg leading-tight truncate">title</h3>
-                        <p className="mt-2">
-                            paragraph
-                        </p>
-                        <p className="text-sm text-gray-700 uppercase tracking-wide font-semibold mt-2">
-                            author &bull; date
-                        </p>
-                    </div>
-                </div>
 
             </div>
-        </div>
+        </>
     )
 }
 
 
 export default Feed
+
+
+//<div className="flex flex-col md:flex-row overflow-hidden bg-white rounded-lg shadow-xl  mt-4 w-100 mx-2">
+
+// {/* <!-- media --> */}
+// <div className="h-64 w-auto md:w-1/2">
+//     <img className="inset-0 h-full w-full object-cover object-center" src="https://cdn.dribbble.com/users/2268251/screenshots/5903041/dribla.jpg?compress=1&resize=800x600" />
+// </div>
+
+// {/* <!-- content --> */ }
+// <div className="w-full py-4 px-6 text-gray-800 flex flex-col justify-between">
+//     <h3 className="font-semibold text-lg leading-tight truncate">title</h3>
+//     <p className="mt-2">
+//         paragraph
+//     </p>
+//     <p className="text-sm text-gray-700 uppercase tracking-wide font-semibold mt-2">
+//         author &bull; date
+//     </p>
+// </div>
+// </div > 

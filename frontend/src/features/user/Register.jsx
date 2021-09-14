@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import { Link } from 'react-router-dom'
 import { useDispatch, useSelector } from 'react-redux'
 import { toast } from 'react-toastify'
-import { registerANewUser } from './UserSlice'
+import { registerANewUser } from './userSlice'
 import { useNavigate } from 'react-router-dom'
 
 const Register = () => {

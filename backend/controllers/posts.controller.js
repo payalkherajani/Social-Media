@@ -4,7 +4,7 @@ const _ = require('lodash')
 const addANewPost = async (req, res) => {
     try {
         const userId = req.user
-        const { description, image_of_post } = req.body
+        const { description, image_of_post, caption } = req.body
         if (!description) {
             return res.status(400).json({ success: false, message: 'Missing Required Fields' })
         }
@@ -12,6 +12,7 @@ const addANewPost = async (req, res) => {
             user: userId,
             description,
             image_of_post,
+            caption,
             likes: [],
             comments: []
         })

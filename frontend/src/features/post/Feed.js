@@ -3,6 +3,7 @@ import { useSelector, useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router'
 import { loadFeedForUser } from './postSlice'
 import no_posts from '../../assets/no_posts.svg'
+import dateformat from 'dateformat'
 
 
 const Feed = () => {
@@ -25,26 +26,30 @@ const Feed = () => {
 
     }, [user.following])
 
+    console.log(posts.feed)
+
     return (
         <>
             <h2 className="text-center font-serif uppercase text-2xl xl:text-3xl mb-4">FEED</h2>
 
             <div className="container w-11/12 md:w-8/12 mx-auto flex flex-col">
                 {
-                    posts.feed.length === 0 ? (
+                    posts.feed.length === 1 && posts.feed[0].length === 0 ? (
                         <div>
-                            <h1>No Posts, Follow Users</h1>
+                            <h1 className="text-center text-pink-700 font-serif uppercase text-2xl xl:text-3xl mb-4">
+                                No Posts, Follow Users</h1>
                             <img src={no_posts} alt="No Post SVG" />
 
                         </div>) : (
                         posts.feed.map((followersPostArray) => {
                             return followersPostArray.map((post) => {
+                                console.log(post.image_of_post, "45")
                                 return <div key={post._id}
                                     className="max-w-sm w-full lg:max-w-full lg:flex mb-4">
 
-                                    <div className="h-48 lg:h-auto lg:w-48 flex-none bg-cover rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden" style={{
+                                    <div className=" border border-gray-400 h-48 lg:h-auto lg:w-48 flex-none bg-cover bg-contain bg-no-repeat bg-center rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden" style={{
                                         backgroundImage:
-                                            `url('https://cdn.dribbble.com/users/2243610/screenshots/14147441/media/0099de4c63da0f32770c4694235a504c.jpg')`
+                                            `url(${post.image_of_post})` || `url('https://cdn.dribbble.com/users/2243610/screenshots/14147441/media/0099de4c63da0f32770c4694235a504c.jpg')`
                                     }}>
 
                                     </div>
@@ -55,15 +60,15 @@ const Feed = () => {
                                             <div className="flex justify-center items-center">
                                                 <img className="w-10 h-10 rounded-full mr-4" src={"https://cdn.dribbble.com/users/3844750/screenshots/10729124/media/2523facfa3e436b8331c316dcc4998f2.jpg"} alt="Avatar User" />
                                                 <div className="text-sm">
-                                                    <p className="text-gray-900 leading-none">Jonathan Reinink</p>
+                                                    <p className="text-gray-900 leading-none">{post.user.name}</p>
                                                 </div>
                                             </div>
-                                            <div className="text-gray-600">{post.updatedAt}</div>
+                                            <div className="text-gray-600">{dateformat(post.updatedAt, "fullDate")}</div>
                                         </div>
 
                                         <div className="mb-8 text-left">
-                                            <div className="text-gray-900 font-bold text-xl mb-2">Can coffee make you a better developer?</div>
-                                            <p className="text-gray-700 text-base">Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptatibus quia, nulla! Maiores et perferendis eaque, exercitationem praesentium nihil.</p>
+                                            <div className="text-gray-900 font-bold text-xl mb-2">{post.caption}</div>
+                                            <p className="text-gray-700 text-base">{post.description}</p>
                                         </div>
 
                                         <hr />

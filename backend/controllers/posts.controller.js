@@ -68,7 +68,6 @@ const toggleLikesOnPostByID = async (req, res) => {
     try {
         const { postId } = req.params
         const userId = req.user
-        console.log(postId, userId, "71")
         const post = await Post.findOne({ _id: postId })
         if (!post) {
             return res.status(400).json({ success: false, message: 'No Post Found' })

@@ -4,6 +4,7 @@ const _ = require('lodash')
 const generateToken = require('../utils/token')
 const cloudinary = require('../utils/cloudinary')
 const Post = require('../models/posts.model')
+const gravatar = require('gravatar')
 
 
 const uploadImageToCloudinary = async (req, res) => {
@@ -33,6 +34,7 @@ const registerUser = async (req, res) => {
         password = bcrypt.hashSync(password, 10)
         // const result = await cloudinary.uploader.upload(req.file.path);
         // console.log(result)
+        const avatar = gravatar.url(email, { s: '200', r: 'pg', d: 'robohash' }, true)
 
         const user = new User({
             name,
@@ -40,6 +42,7 @@ const registerUser = async (req, res) => {
             password,
             followers: [],
             following: [],
+            avatar
         })
 
         await user.save()
@@ -186,7 +189,7 @@ const getLoggedInUserFeed = async (req, res) => {
 
         if (followingUserIDS.following.length > 0) {
             const posts = await Promise.all(followingUserIDS.following.map(async ({ user }) => {
-                const postOfUser = await Post.find({ user: user }).populate('user', ['name']).sort({ 'updatedAt': -1 })
+                const postOfUser = await Post.find({ user: user }).populate('user', ['name', 'avatar']).sort({ 'updatedAt': -1 })
                 return postOfUser
             }))
             return res.status(200).json({ success: true, posts })

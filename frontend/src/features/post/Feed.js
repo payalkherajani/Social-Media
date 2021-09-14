@@ -62,7 +62,7 @@ const Feed = () => {
 
                                         <div className="flex justify-between items-center  mb-4">
                                             <div className="flex justify-center items-center">
-                                                <img className="w-10 h-10 rounded-full mr-4" src={"https://cdn.dribbble.com/users/3844750/screenshots/10729124/media/2523facfa3e436b8331c316dcc4998f2.jpg"} alt="Avatar User" />
+                                                <img className="w-10 h-10 rounded-full mr-4" src={post.user.avatar || "https://cdn.dribbble.com/users/3844750/screenshots/10729124/media/2523facfa3e436b8331c316dcc4998f2.jpg"} alt="Avatar User" />
                                                 <div className="text-sm">
                                                     <p className="text-gray-900 leading-none">{post.user.name}</p>
                                                 </div>

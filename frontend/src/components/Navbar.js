@@ -26,15 +26,15 @@ const Navbar = () => {
                     <h1 className="uppercase"><strong>Panchayat</strong></h1>
 
                     <div className="flex gap-2 flex-wrap hidden md:flex">
-                        <Link to='/profile'><button className="mr-2 uppercase">
+                        <Link to='/profile'><button className="uppercase">
                             <i className="fas fa-user"></i>
-                            Profile
+                            <span className="ml-2">Profile</span>
                         </button> </Link>
-                        <Link to='/suggestion'><button className="mr-2 uppercase">
+                        <Link to='/suggestion'><button className="uppercase">
                             <i className="fas fa-users"></i>
-                            Suggestions
+                            <span className="ml-2">Suggestions</span>
                         </button></Link>
-                        <button className="mr-2 uppercase" onClick={logout}><i className="fas fa-sign-out-alt"></i> Logout</button>
+                        <button className="uppercase" onClick={logout}><i className="fas fa-sign-out-alt"></i> Logout</button>
                     </div>
                     <button className="md:hidden" onClick={() => setOpen(!open)}>
                         <i className="fas fa-bars text-2xl"></i>

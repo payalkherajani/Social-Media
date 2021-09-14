@@ -140,7 +140,9 @@ const toggleFollowing = async (req, res) => {
             }
             const removedFollowers = _.extend(userWhoisGettingFollowedOrUnfollowed, updatedDocFollowers)
             await removedFollowers.save()
-            return res.status(200).json({ success: true, messaged: 'updated' })
+            const allUsers = await User.find({})
+            const filterUsers = allUsers.filter(({ _id }) => _id != userId)
+            return res.status(200).json({ success: true, messaged: 'updated', filterUsers })
         }
         //follow person
         const addUserIntoFollowing = [...userWhoisTryingToFollowOrUnfollow.following, { user: userWhoisGettingFollowedOrUnfollowed._id }]
@@ -157,8 +159,10 @@ const toggleFollowing = async (req, res) => {
         }
         const updatedFollowers = _.extend(userWhoisGettingFollowedOrUnfollowed, updatedDocFollowers)
         await updatedFollowers.save();
+        const allUsers = await User.find({})
+        const filterUsers = allUsers.filter(({ _id }) => _id != userId)
 
-        res.status(200).json({ success: true, messaged: 'updated' })
+        res.status(200).json({ success: true, messaged: 'updated', filterUsers })
 
     } catch (err) {
         console.log(err)
@@ -171,9 +175,7 @@ const getSuggestions = async (req, res) => {
     try {
         const userId = req.user
         const allUsers = await User.find({})
-        const loggedInUser = await User.findOne({ _id: userId })
-        const filterUsers = allUsers.filter(({ _id }) => _id != userId &&
-            !loggedInUser.following.some(({ user }) => user != _id))  //need to test this logic more
+        const filterUsers = allUsers.filter(({ _id }) => _id != userId)
         return res.status(200).json({ success: true, users: filterUsers })
     } catch (err) {
         console.log(err)

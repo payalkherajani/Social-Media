@@ -82,6 +82,45 @@ export const deleteComment = createAsyncThunk(
         }
     }
 )
+
+
+export const getSuggestion = createAsyncThunk(
+    "user/suggestion", async () => {
+        try {
+            const { data } = await axios.get(`${process.env.REACT_APP_URL}/api/users/suggestions`, {
+                headers: {
+                    'x-auth-token': localStorage.token
+                }
+            })
+
+            if (data?.success) {
+                return data
+            }
+        } catch (err) {
+            return err.response.data
+        }
+    }
+)
+
+export const toggleFollow = createAsyncThunk(
+    "toggle/follow", async ({ followingpersonId }, { fulfillWithValue, rejectWithValue }) => {
+        try {
+
+            const { data } = await axios.post(`${process.env.REACT_APP_URL}/api/users/following`, { followingpersonId }, {
+                headers: {
+                    'x-auth-token': localStorage.token
+                }
+            })
+
+            if (data?.success) {
+                return fulfillWithValue(data)
+            }
+        } catch (err) {
+            return rejectWithValue(err.response.data)
+        }
+    }
+)
+
 export const postSlice = createSlice({
     name: "post",
     initialState: {
@@ -89,7 +128,8 @@ export const postSlice = createSlice({
         loggedInUsersPosts: [],
         status: 'idle',
         error: '',
-        selectedPostDetails: {}
+        selectedPostDetails: {},
+        suggestion: []
     },
     reducers: {
         goBackButtonIsPressed: (state) => {
@@ -141,6 +181,20 @@ export const postSlice = createSlice({
         [deleteComment.rejected]: (state, action) => {
             state.status = 'Delete Comment Failed';
         },
+        [getSuggestion.fulfilled]: (state, action) => {
+            state.status = 'Suggestions Success';
+            state.suggestion = action?.payload?.users
+        },
+        [getSuggestion.rejected]: (state, action) => {
+            state.status = 'Suggestions Success';
+        },
+        [toggleFollow.fulfilled]: (state, action) => {
+            state.status = 'Toggle Follow Success';
+            state.suggestion = action?.payload?.filterUsers
+        },
+        [toggleFollow.rejected]: (state, action) => {
+            state.error = action?.payload?.message
+        }
 
 
     }

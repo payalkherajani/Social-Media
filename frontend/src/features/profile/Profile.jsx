@@ -94,11 +94,11 @@ const Profile = () => {
                                 <div className="mr-4"> {profile?.loggedInUserPosts?.length}</div>
                             </div>
 
-                            <div className="pt-4">
+                            {/* <div className="pt-4">
                                 <button className="bg-green-700 hover:bg-green-900 text-white font-bold py-2 px-4 rounded-full">
                                     Update Profile
                                 </button>
-                            </div>
+                            </div> */}
 
                         </div>
 

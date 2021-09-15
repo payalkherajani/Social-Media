@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { getAllPostsOfUser, toggleLikeProfileBtn } from './profileSlice'
+import { deletePost, getAllPostsOfUser, toggleLikeProfileBtn } from './profileSlice'
 import add_post from '../../assets/add_post.svg'
 import { Modal } from '../../components'
 import { Link } from 'react-router-dom'
@@ -22,6 +22,10 @@ const Profile = () => {
     const toggleLike = (postId) => {
         dispatch(toggleLikeProfileBtn({ postId }))
 
+    }
+
+    const deletePostBtnPressed = (postId) => {
+        dispatch(deletePost({ postId }))
     }
 
     useEffect(() => {
@@ -177,7 +181,7 @@ const Profile = () => {
                                                     <div>
                                                         <span className="ml-4 text-2xl">
 
-                                                            <i className="fas fa-trash text-2xl" style={{ color: 'red' }}></i>
+                                                            <i className="fas fa-trash text-2xl" style={{ color: 'red' }} onClick={() => deletePostBtnPressed(onePost._id)}></i>
                                                         </span>
 
 

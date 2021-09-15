@@ -59,6 +59,7 @@ const deletePost = async (req, res) => {
         const { postId } = req.params
         const post = await Post.findOne({ _id: postId })
         await post.remove()
+        return res.status(200).json({ success: true, message: 'Post Removed' })
     } catch (err) {
         console.log(err)
         res.status(500).json({ success: false, message: 'Server Error' })

@@ -45,9 +45,11 @@ export const updatePost = createAsyncThunk(
 )
 
 export const deletePost = createAsyncThunk(
-    "register/user", async ({ postId }, { fulfillWithValue, rejectWithValue }) => {
+    "delete/post", async ({ postId }, { fulfillWithValue, rejectWithValue }) => {
         try {
+
             const { data } = await axios.delete(`${process.env.REACT_APP_URL}/api/posts/${postId}`)
+
             if (data?.success) {
                 return fulfillWithValue(data)
             }
@@ -119,6 +121,12 @@ export const profileSlice = createSlice({
         [toggleLikeProfileBtn.rejected]: (state, action) => {
             state.status = 'Something went wrong in liking post'
         },
+        [deletePost.fulfilled]: (state) => {
+            state.status = 'Post Delete Success'
+        },
+        [deletePost.rejected]: (state) => {
+            state.status = 'Post Delete Failed'
+        }
     }
 })
 

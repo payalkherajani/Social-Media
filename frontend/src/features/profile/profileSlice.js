@@ -1,18 +1,18 @@
 import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import axios from 'axios'
 
-export const updateProfile = createAsyncThunk(
-    "register/user", async ({ avatar, bio }, { fulfillWithValue, rejectWithValue }) => {
-        try {
-            const { data } = await axios.put(`${process.env.REACT_APP_URL}/api/users`, { avatar, bio })
-            if (data?.success) {
-                return fulfillWithValue(data)
-            }
-        } catch (err) {
-            return rejectWithValue(err.response.data)
-        }
-    }
-)
+// export const updateProfile = createAsyncThunk(
+//     "register/user", async ({ avatar, bio }, { fulfillWithValue, rejectWithValue }) => {
+//         try {
+//             const { data } = await axios.put(`${process.env.REACT_APP_URL}/api/users`, { avatar, bio })
+//             if (data?.success) {
+//                 return fulfillWithValue(data)
+//             }
+//         } catch (err) {
+//             return rejectWithValue(err.response.data)
+//         }
+//     }
+// )
 
 export const getAllPostsOfUser = createAsyncThunk(
     "profile/posts", async () => {
@@ -32,9 +32,9 @@ export const getAllPostsOfUser = createAsyncThunk(
 )
 
 export const updatePost = createAsyncThunk(
-    "register/user", async ({ description, caption }, { fulfillWithValue, rejectWithValue }) => {
+    "post/update", async ({ postId, description, caption }, { fulfillWithValue, rejectWithValue }) => {
         try {
-            const { data } = await axios.put(`${process.env.REACT_APP_URL}/api/users`, { description, caption })
+            const { data } = await axios.put(`${process.env.REACT_APP_URL}/api/posts/${postId}`, { description, caption })
             if (data?.success) {
                 return fulfillWithValue(data)
             }
@@ -87,6 +87,25 @@ export const toggleLikeProfileBtn = createAsyncThunk(
     }
 )
 
+
+export const fetchPostDetails = createAsyncThunk(
+    "fetch/profilepost", async ({ postId }, { fulfillWithValue, rejectWithValue }) => {
+        try {
+
+            const { data } = await axios.get(`${process.env.REACT_APP_URL}/api/posts/${postId}`, {
+                headers: {
+                    'x-auth-token': localStorage.token
+                }
+            })
+            if (data?.success) {
+                return fulfillWithValue(data)
+            }
+        } catch (err) {
+            return rejectWithValue(err.response.data)
+        }
+    }
+)
+
 export const profileSlice = createSlice({
     name: 'profile',
     initialState: {
@@ -126,6 +145,20 @@ export const profileSlice = createSlice({
         },
         [deletePost.rejected]: (state) => {
             state.status = 'Post Delete Failed'
+        },
+        [fetchPostDetails.fulfilled]: (state, action) => {
+            state.status = 'Profile Post Fetch Success';
+            state.singlePostDetails = action?.payload?.post
+        },
+        [fetchPostDetails.rejected]: (state, action) => {
+            state.status = 'Profile Post Fetch Fail';
+            state.error = action?.payload?.message
+        },
+        [updatePost.fulfilled]: (state) => {
+            state.status = 'Updated Post Success';
+        },
+        [updatePost.rejected]: (state) => {
+            state.status = 'Updated Post Failed';
         }
     }
 })

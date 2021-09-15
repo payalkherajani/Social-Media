@@ -5,11 +5,14 @@ import add_post from '../../assets/add_post.svg'
 import { Modal } from '../../components'
 import { Link } from 'react-router-dom'
 import dateformat from 'dateformat'
+import EditPostModal from './EditPostModal'
 
 
 const Profile = () => {
 
     const [showModal, setShowModal] = useState(false);
+    const [showEditModal, setShowEditModal] = useState(false)
+    const [selectedPostID, setSelectedPostID] = useState('')
 
     const loggedInUser = useSelector(state => state.user)
     const profile = useSelector(state => state.profile)
@@ -26,6 +29,11 @@ const Profile = () => {
 
     const deletePostBtnPressed = (postId) => {
         dispatch(deletePost({ postId }))
+    }
+
+    const onEditIconClicked = (id) => {
+        setSelectedPostID(id)
+        setShowEditModal(true)
     }
 
     useEffect(() => {
@@ -149,20 +157,20 @@ const Profile = () => {
                                                             checkIfYouHaveLiked(onePost.likes) ?
                                                                 (
                                                                     <i
-                                                                        className="fas fa-heart text-2xl"
+                                                                        className="fas fa-heart text-2xl cursor-pointer"
                                                                         onClick={() => toggleLike(onePost._id)}
                                                                         style={{ color: 'red' }}
                                                                     >
 
                                                                     </i>) :
-                                                                (<i className="far fa-heart text-2xl" onClick={() => toggleLike(onePost._id)}></i>)
+                                                                (<i className="far fa-heart text-2xl cursor-pointer" onClick={() => toggleLike(onePost._id)}></i>)
                                                         }
 
                                                     </div>
 
                                                     <div>
                                                         <span className="ml-4 text-2xl">
-                                                            <Link to={`/post/${onePost._id}`}><i className="fas fa-eye text-2xl"></i></Link>
+                                                            <Link to={`/post/${onePost._id}`}><i className="fas fa-eye text-2xl cursor-pointer"></i></Link>
                                                         </span>
 
 
@@ -172,7 +180,10 @@ const Profile = () => {
                                                     <div>
                                                         <span className="ml-4 text-2xl">
 
-                                                            <i className="fas fa-edit text-2xl" style={{ color: 'blue' }}></i>
+                                                            <i className="fas fa-edit text-2xl cursor-pointer"
+                                                                onClick={() => onEditIconClicked(onePost._id)}
+
+                                                                style={{ color: 'blue' }}></i>
                                                         </span>
 
 
@@ -181,7 +192,7 @@ const Profile = () => {
                                                     <div>
                                                         <span className="ml-4 text-2xl">
 
-                                                            <i className="fas fa-trash text-2xl" style={{ color: 'red' }} onClick={() => deletePostBtnPressed(onePost._id)}></i>
+                                                            <i className="fas fa-trash text-2xl cursor-pointer" style={{ color: 'red' }} onClick={() => deletePostBtnPressed(onePost._id)}></i>
                                                         </span>
 
 
@@ -198,6 +209,11 @@ const Profile = () => {
                     }
                 </div>
             </div>
+            {showEditModal && <EditPostModal
+                setShowEditModal={setShowEditModal}
+                id={selectedPostID}
+
+            />}
 
         </div>
     )

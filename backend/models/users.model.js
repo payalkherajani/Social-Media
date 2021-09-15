@@ -17,7 +17,6 @@ const userSchema = new Schema({
     },
     avatar: {
         type: String,
-        default: null
     },
     followers: [
         {
@@ -37,7 +36,7 @@ const userSchema = new Schema({
     ],
     bio: {
         type: String,
-        default: null
+        default: "My Bio"
     },
     cloudinary_id: {
         type: String

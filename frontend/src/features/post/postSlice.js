@@ -125,7 +125,6 @@ export const postSlice = createSlice({
     name: "post",
     initialState: {
         feed: [],
-        loggedInUsersPosts: [],
         status: 'idle',
         error: '',
         selectedPostDetails: {},

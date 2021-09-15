@@ -109,7 +109,7 @@ const getLoggedInUserInfo = async (req, res) => {
         if (!user) {
             return res.status(400).json({ success: false, message: 'No User Found' });
         }
-        const loggedInUserDetails = { 'id': user._id, 'name': user.name, 'email': user.email, 'following': user.following, 'followers': user.followers, 'bio': user.bio }
+        const loggedInUserDetails = { 'id': user._id, 'name': user.name, 'email': user.email, 'following': user.following, 'followers': user.followers, 'bio': user.bio, 'avatar': user.avatar }
         return res.status(200).json({ success: true, loggedInUserDetails });
     } catch (err) {
         return res.status(500).json({ success: false, message: 'Server Error' });

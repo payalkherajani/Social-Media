@@ -46,13 +46,13 @@ const Navbar = () => {
                 <nav className="md:hidden">
                     {
                         open &&
-                        <ul className="flex justify-start items-start text-white  bg-pink-400  mb-4">
+                        <div className="flex justify-start items-start text-white  bg-pink-400  mb-4">
 
                             <NavLink to='/feed' activeClassName="active" end>
                                 <button className="mr-2 mb-2 px-4 uppercase"> Feed </button>
                             </NavLink>
 
-                            <NavLink to='/profile' activeS>
+                            <NavLink to='/profile' activeClassName="active" end >
                                 <button className="mr-2 mb-2 px-4 uppercase">Profile </button>
                             </NavLink>
 
@@ -61,7 +61,7 @@ const Navbar = () => {
                             </NavLink>
 
                             <button className="mr-2 px-4 uppercase" onClick={logout}> Logout</button>
-                        </ul>
+                        </div>
                     }
                 </nav>
             </>

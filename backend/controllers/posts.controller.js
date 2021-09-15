@@ -41,8 +41,8 @@ const updatePostDetails = async (req, res) => {
     try {
         const { postId } = req.params
         const post = await Post.findOne({ _id: postId })
-        const { description } = req.body
-        const updatedPost = { ...post._doc, description }
+        const { description, caption } = req.body
+        const updatedPost = { ...post._doc, description, caption }
         const updated = _.extend(post, updatedPost)
         await updated.save()
         res.status(200).json({ success: true, message: 'Post Updated', post: updated })
@@ -150,4 +150,15 @@ const removeCommentOnPost = async (req, res) => {
 
     }
 }
-module.exports = { addANewPost, getPostByID, deletePost, toggleLikesOnPostByID, addCommentOnPostByID, removeCommentOnPost, updatePostDetails }
+
+const getAllLoggedInUserPosts = async (req, res) => {
+    try {
+        const userId = req.user
+        const allPostsofUser = await Post.find({ user: userId })
+        return res.status(200).json({ success: true, allPostsofUser })
+    } catch (err) {
+        console.log(err)
+        res.status(500).json({ success: false, message: 'Server Error' })
+    }
+}
+module.exports = { addANewPost, getPostByID, deletePost, toggleLikesOnPostByID, addCommentOnPostByID, removeCommentOnPost, updatePostDetails, getAllLoggedInUserPosts }

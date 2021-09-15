@@ -154,7 +154,7 @@ const removeCommentOnPost = async (req, res) => {
 const getAllLoggedInUserPosts = async (req, res) => {
     try {
         const userId = req.user
-        const allPostsofUser = await Post.find({ user: userId })
+        const allPostsofUser = await Post.find({ user: userId }).sort({ 'updatedAt': -1 })
         return res.status(200).json({ success: true, allPostsofUser })
     } catch (err) {
         console.log(err)

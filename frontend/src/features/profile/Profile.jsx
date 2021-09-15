@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react'
 import { useSelector, useDispatch } from 'react-redux'
-import { getAllPostsOfUser } from './profileSlice'
+import { getAllPostsOfUser, toggleLikeProfileBtn } from './profileSlice'
 import add_post from '../../assets/add_post.svg'
 import { Modal } from '../../components'
-
+import { Link } from 'react-router-dom'
+import dateformat from 'dateformat'
 
 
 const Profile = () => {
@@ -14,6 +15,14 @@ const Profile = () => {
     const profile = useSelector(state => state.profile)
     const dispatch = useDispatch()
 
+    const checkIfYouHaveLiked = (likesArray) => {
+        return likesArray.some(({ user }) => user == loggedInUser?.userDetails?.id)
+    }
+
+    const toggleLike = (postId) => {
+        dispatch(toggleLikeProfileBtn({ postId }))
+
+    }
 
     useEffect(() => {
         dispatch(getAllPostsOfUser())
@@ -94,7 +103,94 @@ const Profile = () => {
                                 No Posts, Add Some! 😄</h1>
                             <img src={add_post} alt="Add Post SVG" />
 
-                        </div>) : (<div>Posts </div>)
+                        </div>) : (<div>
+
+                            {
+                                profile?.loggedInUserPosts?.map((onePost) => {
+                                    return (
+                                        <div
+                                            className="max-w-sm w-full lg:max-w-full lg:flex mb-4" key={onePost._id}>
+
+                                            <div className="border border-gray-400 h-48 lg:h-auto lg:w-48 flex-none bg-contain bg-no-repeat bg-center rounded-t lg:rounded-t-none lg:rounded-l text-center overflow-hidden" style={{
+                                                backgroundImage:
+                                                    `url(${onePost.image_of_post})` || `url('https://cdn.dribbble.com/users/2243610/screenshots/14147441/media/0099de4c63da0f32770c4694235a504c.jpg')`
+                                            }}>
+
+                                            </div>
+
+                                            <div className="border-r border-b border-l border-gray-400 lg:border-l-0 lg:border-t lg:border-gray-400 bg-white rounded-b lg:rounded-b-none lg:rounded-r p-4 flex flex-col justify-between leading-normal flex-grow">
+
+                                                <div className="flex justify-between items-center  mb-4">
+                                                    <div className="flex justify-center items-center">
+                                                        <img className="w-10 h-10 rounded-full mr-4" src={loggedInUser?.userDetails?.avatar || "https://cdn.dribbble.com/users/3844750/screenshots/10729124/media/2523facfa3e436b8331c316dcc4998f2.jpg"} alt="Avatar User" />
+                                                        <div className="text-sm">
+                                                            <p className="text-gray-900 leading-none">{onePost.user.name}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div className="text-gray-600">{dateformat(onePost.updatedAt, "fullDate")}</div>
+                                                </div>
+
+                                                <div className="mb-8 text-left">
+                                                    <div className="text-gray-900 font-bold text-xl mb-2">{onePost.caption}</div>
+                                                    <p className="text-gray-700 text-base">{onePost.description}</p>
+                                                </div>
+
+                                                <hr />
+
+                                                <div className="flex mt-4 justify-between">
+
+                                                    <div>
+                                                        <span className="ml-4 text-2xl">{onePost.likes.length > 0 ? (onePost.likes.length) : ('')} </span>
+                                                        {
+                                                            checkIfYouHaveLiked(onePost.likes) ?
+                                                                (
+                                                                    <i
+                                                                        className="fas fa-heart text-2xl"
+                                                                        onClick={() => toggleLike(onePost._id)}
+                                                                        style={{ color: 'red' }}
+                                                                    >
+
+                                                                    </i>) :
+                                                                (<i className="far fa-heart text-2xl" onClick={() => toggleLike(onePost._id)}></i>)
+                                                        }
+
+                                                    </div>
+
+                                                    <div>
+                                                        <span className="ml-4 text-2xl">
+                                                            <Link to={`/post/${onePost._id}`}><i className="fas fa-eye text-2xl"></i></Link>
+                                                        </span>
+
+
+                                                    </div>
+
+
+                                                    <div>
+                                                        <span className="ml-4 text-2xl">
+
+                                                            <i className="fas fa-edit text-2xl" style={{ color: 'blue' }}></i>
+                                                        </span>
+
+
+                                                    </div>
+
+                                                    <div>
+                                                        <span className="ml-4 text-2xl">
+
+                                                            <i className="fas fa-trash text-2xl" style={{ color: 'red' }}></i>
+                                                        </span>
+
+
+                                                    </div>
+                                                </div>
+
+                                            </div>
+                                        </div>
+                                    )
+                                })
+                            }
+
+                        </div>)
                     }
                 </div>
             </div>

@@ -71,6 +71,20 @@ export const addPost = createAsyncThunk(
     }
 )
 
+
+export const toggleLikeProfileBtn = createAsyncThunk(
+    "like/post", async ({ postId }, { fulfillWithValue, rejectWithValue }) => {
+        try {
+            const { data } = await axios.post(`${process.env.REACT_APP_URL}/api/posts/likes/${postId}`)
+            if (data?.success) {
+                return fulfillWithValue(data)
+            }
+        } catch (err) {
+            return rejectWithValue(err.response.data)
+        }
+    }
+)
+
 export const profileSlice = createSlice({
     name: 'profile',
     initialState: {
@@ -98,12 +112,17 @@ export const profileSlice = createSlice({
             state.status = 'New Post Added Failed';
             state.error = action?.payload?.message
 
-        }
+        },
+        [toggleLikeProfileBtn.fulfilled]: (state, action) => {
+            state.status = 'Profile Post Liked';
+        },
+        [toggleLikeProfileBtn.rejected]: (state, action) => {
+            state.status = 'Something went wrong in liking post'
+        },
     }
 })
 
 export const {
-
 } = profileSlice.actions
 
 export default profileSlice.reducer

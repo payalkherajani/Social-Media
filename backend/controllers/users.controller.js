@@ -65,7 +65,7 @@ const loginUser = async (req, res) => {
             if (isPasswordMatch) {
                 const token = generateToken(userExists._id)
 
-                const loggedInUserDetails = { 'id': userExists._id, 'name': userExists.name, 'email': userExists.email, 'following': userExists.following, 'followers': userExists.followers, 'bio': userExists.bio }
+                const loggedInUserDetails = { 'id': userExists._id, 'name': userExists.name, 'email': userExists.email, 'following': userExists.following, 'followers': userExists.followers, 'bio': userExists.bio, avatar: userExists.avatar }
 
                 return res.status(200).json({ success: true, message: 'Login Successfull', token, loggedInUserDetails })
             } else {

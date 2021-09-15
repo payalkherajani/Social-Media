@@ -15,7 +15,7 @@ export const updateProfile = createAsyncThunk(
 )
 
 export const getAllPostsOfUser = createAsyncThunk(
-    "register/user", async () => {
+    "profile/posts", async () => {
         try {
             const { data } = await axios.get(`${process.env.REACT_APP_URL}/api/posts/userposts`, {
                 headers: {
@@ -58,7 +58,18 @@ export const deletePost = createAsyncThunk(
 )
 
 
-// export const addPost
+export const addPost = createAsyncThunk(
+    "add/post", async ({ description, caption }, { fulfillWithValue, rejectWithValue }) => {
+        try {
+            const { data } = await axios.post(`${process.env.REACT_APP_URL}/api/posts`, { description, caption })
+            if (data?.success) {
+                return fulfillWithValue(data)
+            }
+        } catch (err) {
+            return rejectWithValue(err.response.data)
+        }
+    }
+)
 
 export const profileSlice = createSlice({
     name: 'profile',
@@ -79,6 +90,14 @@ export const profileSlice = createSlice({
         [getAllPostsOfUser.rejected]: (state, action) => {
             state.status = 'ALL POSTS FETCHED FAILED';
             state.error = action?.payload?.message
+        },
+        [addPost.fulfilled]: (state, action) => {
+            state.status = 'New Post Added'
+        },
+        [addPost.rejected]: (state, action) => {
+            state.status = 'New Post Added Failed';
+            state.error = action?.payload?.message
+
         }
     }
 })

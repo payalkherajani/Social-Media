@@ -6,7 +6,7 @@ import { ToastContainer } from 'react-toastify'
 import 'react-toastify/dist/ReactToastify.css';
 import { Navbar, Home, Footer } from './components'
 import { useSelector, useDispatch } from 'react-redux'
-import { getLoggedInUser } from './features/user/userSlice';
+// import { getLoggedInUser } from './features/user/userSlice';
 import axios from 'axios'
 import { SelectedPost, Suggestion } from './features/post'
 
@@ -15,14 +15,14 @@ function App() {
   const user = useSelector(state => state.user)
   const dispatch = useDispatch()
 
-  useEffect(() => {
-    if (localStorage.token) {
-      if (user.token === '') {
-        dispatch(getLoggedInUser())
-      }
+  // useEffect(() => {
+  //   if (localStorage.token) {
+  //     if (user.token === '') {
+  //       dispatch(getLoggedInUser())
+  //     }
 
-    }
-  }, [user])
+  //   }
+  // }, [user])
 
   useEffect(() => {
     axios.defaults.headers.common["x-auth-token"] = localStorage.token;
